@@ -1,63 +1,88 @@
 {
-  "version": "0.1.0-demo",
+  "version": "0.2.0-demo",
   "updatedAt": "2026-10-27T18:38:00-03:00",
   "dataset": "fictitious-public-demo",
-  "disclaimer": "Todos os registros são fictícios; não há conexão com dados privados.",
+  "disclaimer": "Todos os registros são fictícios, não há conexão com dados privados.",
   "items": [
     {
-      "id": "sample-project",
+      "id": "demo-1",
       "title": "Projeto exemplo · lançamento",
       "area": "tech",
       "status": "attention",
-      "summary": "Projeto fictício de desenvolvimento.",
-      "nextAction": "Aprovar próxima etapa do projeto de exemplo",
+      "summary": "Exemplo de projeto digital.",
+      "nextAction": "Validar a próxima etapa do projeto demonstrativo",
       "dueDate": null,
       "source": "Demonstração pública",
-      "link": null
+      "link": null,
+      "media": {
+        "src": "assets/ai.svg",
+        "alt": "Ilustração de tecnologia",
+        "mode": "cover"
+      }
     },
     {
-      "id": "sample-property",
+      "id": "demo-2",
       "title": "Imóvel exemplo · documentos",
       "area": "property",
       "status": "attention",
-      "summary": "Rotina fictícia de gestão de imóvel.",
-      "nextAction": "Validar documentos de demonstração",
+      "summary": "Exemplo de acompanhamento de documentos.",
+      "nextAction": "Revisar os registros fictícios do imóvel",
       "dueDate": "2026-11-02",
       "source": "Demonstração pública",
-      "link": null
+      "link": null,
+      "media": {
+        "src": "assets/floripa.svg",
+        "alt": "Ilustração de paisagem",
+        "mode": "cover"
+      }
     },
     {
-      "id": "sample-case",
+      "id": "demo-3",
       "title": "Caso exemplo · acompanhamento",
       "area": "legal",
       "status": "watch",
-      "summary": "Caso fictício para ilustrar acompanhamento.",
-      "nextAction": "Conferir próxima atualização simulada",
+      "summary": "Exemplo de um assunto jurídico sem informações reais.",
+      "nextAction": "Acompanhar o andamento fictício",
       "dueDate": null,
       "source": "Demonstração pública",
-      "link": null
+      "link": null,
+      "media": {
+        "src": "assets/legal.svg",
+        "alt": "Ilustração jurídica",
+        "mode": "cover"
+      }
     },
     {
-      "id": "sample-business",
-      "title": "Negócio exemplo · pesquisa",
+      "id": "demo-4",
+      "title": "Mobilidade exemplo · pesquisa",
       "area": "business",
       "status": "active",
-      "summary": "Pesquisa de mercado fictícia.",
-      "nextAction": "Revisar alternativas fictícias",
+      "summary": "Pesquisa fictícia relacionada a mobilidade urbana.",
+      "nextAction": "Avaliar alternativas exemplificativas",
       "dueDate": null,
       "source": "Demonstração pública",
-      "link": null
+      "link": null,
+      "media": {
+        "src": "assets/bus.svg",
+        "alt": "Ilustração de ônibus",
+        "mode": "cover"
+      }
     },
     {
-      "id": "sample-routine",
-      "title": "Rotina pessoal · organização",
+      "id": "demo-5",
+      "title": "Câmeras exemplo · levantamento",
       "area": "personal",
       "status": "watch",
-      "summary": "Rotina genérica para demonstrar categorias.",
-      "nextAction": "Definir recorrência de exemplo",
+      "summary": "Exemplo de assunto em observação.",
+      "nextAction": "Consultar fontes fictícias",
       "dueDate": null,
       "source": "Demonstração pública",
-      "link": null
+      "link": null,
+      "media": {
+        "src": "assets/camera.svg",
+        "alt": "Ilustração de câmera",
+        "mode": "cover"
+      }
     }
   ]
 }
