@@ -1,0 +1,63 @@
+{
+  "version": "0.1.0-demo",
+  "updatedAt": "2026-10-27T18:38:00-03:00",
+  "dataset": "fictitious-public-demo",
+  "disclaimer": "Todos os registros são fictícios; não há conexão com dados privados.",
+  "items": [
+    {
+      "id": "sample-project",
+      "title": "Projeto exemplo · lançamento",
+      "area": "tech",
+      "status": "attention",
+      "summary": "Projeto fictício de desenvolvimento.",
+      "nextAction": "Aprovar próxima etapa do projeto de exemplo",
+      "dueDate": null,
+      "source": "Demonstração pública",
+      "link": null
+    },
+    {
+      "id": "sample-property",
+      "title": "Imóvel exemplo · documentos",
+      "area": "property",
+      "status": "attention",
+      "summary": "Rotina fictícia de gestão de imóvel.",
+      "nextAction": "Validar documentos de demonstração",
+      "dueDate": "2026-11-02",
+      "source": "Demonstração pública",
+      "link": null
+    },
+    {
+      "id": "sample-case",
+      "title": "Caso exemplo · acompanhamento",
+      "area": "legal",
+      "status": "watch",
+      "summary": "Caso fictício para ilustrar acompanhamento.",
+      "nextAction": "Conferir próxima atualização simulada",
+      "dueDate": null,
+      "source": "Demonstração pública",
+      "link": null
+    },
+    {
+      "id": "sample-business",
+      "title": "Negócio exemplo · pesquisa",
+      "area": "business",
+      "status": "active",
+      "summary": "Pesquisa de mercado fictícia.",
+      "nextAction": "Revisar alternativas fictícias",
+      "dueDate": null,
+      "source": "Demonstração pública",
+      "link": null
+    },
+    {
+      "id": "sample-routine",
+      "title": "Rotina pessoal · organização",
+      "area": "personal",
+      "status": "watch",
+      "summary": "Rotina genérica para demonstrar categorias.",
+      "nextAction": "Definir recorrência de exemplo",
+      "dueDate": null,
+      "source": "Demonstração pública",
+      "link": null
+    }
+  ]
+}
