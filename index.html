@@ -1,74 +1,48 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#111715">
-  <meta name="description" content="Central Pessoal — painel de atenção, contextos e próximas decisões.">
-  <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css">
-  <link rel="stylesheet" href="./visual.css">
-  <title>Central Pessoal — Prévia pública</title>
-  <script defer src="./app.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1111">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="description" content="Central Pessoal — painel visual de assuntos e intervenções.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="stylesheet" href="./game.css">
+<script defer src="./game.js"></script>
+<title>Central · Demo fictícia</title>
 </head>
 <body>
-  <div class="shell">
-    <aside class="sidebar" aria-label="Navegação principal">
-      <div class="brand"><span class="brand-mark">C<span class="brand-dot">.</span></span><span class="brand-text">central<span class="subbrand">/pessoal</span></span></div>
-      <div class="nav-label">ESPAÇO DE TRABALHO</div>
-      <nav id="nav" class="nav">
-        <button class="nav-item selected" data-view="attention"><span class="nav-icon">◈</span> Caixa de atenção <span class="count" id="attention-nav-count">—</span></button>
-        <button class="nav-item" data-view="all"><span class="nav-icon">▦</span> Todos os assuntos</button>
-        <button class="nav-item" data-view="watch"><span class="nav-icon">◷</span> Monitoramento</button>
-      </nav>
-      <div class="nav-label area-label">ÁREAS</div>
-      <div id="area-links" class="nav"></div>
-      <div class="sidebar-bottom">
-        <div class="sync-pill"><span class="pulse"></span><span>Snapshot versionado</span></div>
-        <p>Dados sincronizados por publicação do repositório, não em tempo real.</p>
-        <a class="repo-link" href="https://github.com/wagarcdev/central-pessoal-preview" target="_blank" rel="noopener noreferrer">Código da prévia ↗</a>
-      </div>
-    </aside>
-    <main class="main">
-      <header class="topbar">
-        <div class="breadcrumb">CENTRAL <span>/</span> <span id="crumb">ATENÇÃO</span></div>
-        <div class="top-actions">
-          <span id="snapshot" class="snapshot">Snapshot inicial</span>
-          <button id="refresh" class="icon-button" title="Recarregar dados" aria-label="Recarregar dados">↻</button>
-        </div>
-      </header>
-      <section class="content">
-        <div class="headline">
-          <div>
-            <div class="eyebrow"><span class="green-line"></span> VISÃO OPERACIONAL</div>
-            <h1 id="heading">Sua atenção, <em>primeiro.</em></h1>
-            <p id="subtitle">Uma visão clara do que depende de você — sem perder o contexto do restante.</p>
-          </div>
-          <div class="date" id="date"></div>
-        </div>
-        <section class="metrics" aria-label="Visão geral">
-          <div class="metric metric-accent"><span>AGUARDANDO VOCÊ</span><strong id="metric-attention">—</strong><small>Próximas decisões e validações <b>↗</b></small></div>
-          <div class="metric"><span>ASSUNTOS MAPEADOS</span><strong id="metric-total">—</strong><small>Distribuídos em diferentes áreas</small></div>
-          <div class="metric"><span>PRAZOS REGISTRADOS</span><strong id="metric-due">—</strong><small>Datas explícitas no snapshot</small></div>
-          <div class="metric"><span>EM ACOMPANHAMENTO</span><strong id="metric-watch">—</strong><small>Sem intervenção imediata</small></div>
-        </section>
-        <div class="section-heading">
-          <div><span class="section-kicker">FILA DE TRABALHO</span><h2 id="list-title">O que precisa de você</h2></div>
-          <div class="toolbar">
-            <label class="search"><span>⌕</span><input id="search" type="search" placeholder="Buscar assuntos" aria-label="Buscar assuntos"></label>
-            <select id="filter" aria-label="Filtrar área"><option value="">Todas as áreas</option></select>
-          </div>
-        </div>
-        <div id="notice" class="notice" role="note"><span>ⓘ</span><span><strong>Prévia pública.</strong> Registros fictícios; seus dados pessoais não são publicados aqui.</span></div>
-        <div id="cards" class="cards" aria-live="polite"></div>
-        <div class="footnote"><span>APENAS O QUE IMPORTA, NA HORA CERTA.</span><span id="footer-version">CENTRAL / V0.1</span></div>
-      </section>
-    </main>
-  </div>
-  <div id="overlay" class="overlay" hidden><div class="scrim" id="scrim"></div><section class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title"><div class="drawer-top"><span class="drawer-eyebrow">CONTEXTO DO ASSUNTO</span><button id="drawer-close" class="icon-button" aria-label="Fechar painel">✕</button></div><div id="drawer-content"></div></section></div>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div class="screen">
+<header class="masthead">
+ <div class="brand"><span class="brand-mark">C<span>.</span></span><span class="brand-name">CENTRAL <small>/ BASE DE OPERAÇÕES</small></span></div>
+ <div class="mast-actions"><span class="connection"><i></i> SNAPSHOT ESTÁTICO</span><button class="round" id="reload" aria-label="Atualizar dados" title="Recarregar JSON">↻</button></div>
+</header>
+<main class="main">
+ <div class="headline">
+   <div><span class="eyebrow">DEMONSTRAÇÃO PÚBLICA <span class="divider-dot">◆</span> VISÃO DE ATENÇÃO</span><h1>Escolha sua <em>próxima ação.</em></h1></div>
+   <span id="updated" class="updated">—</span>
+ </div>
+ <div class="toolbar">
+  <nav class="tabs" aria-label="Visualizações">
+    <button data-view="attention" class="tab selected">Minha vez <b id="need-count">—</b></button>
+    <button data-view="all" class="tab">Todos os assuntos</button>
+    <button data-view="watch" class="tab">Observando</button>
+  </nav>
+  <label class="search"><span>⌕</span><input type="search" id="search" placeholder="Localizar..." aria-label="Localizar assunto"></label>
+ </div>
+ <div class="statusline"><span id="list-label">INTERVENÇÃO NECESSÁRIA</span><span class="status-hint">TOQUE EM UM MÓDULO PARA VER AS TAREFAS</span></div>
+ <section id="tiles" class="tile-grid" aria-live="polite"></section>
+ <footer class="footer"><span>◉ <span id="stamp">Snapshot versionado</span></span><span id="version">CENTRAL / V0.3</span></footer>
+</main>
+</div>
+<div id="overlay" class="overlay" hidden>
+  <div class="veil" id="veil"></div>
+  <section class="detail" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+    <div id="detail-root"></div>
+  </section>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

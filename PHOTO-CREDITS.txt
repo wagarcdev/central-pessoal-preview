@@ -1,0 +1,13 @@
+Photographic module imagery - Unsplash License: https://unsplash.com/license
+Downloaded and resized from these Unsplash CDN photo IDs (real photographs, illustrative; not documentation of the projects):
+law-gavel: photo-1589829545856-d10d557cf95f
+code-screens: photo-1461749280684-dccba630e2f6
+beach: photo-1507525428034-b723cf961d3e
+nightclub: photo-1459749411175-04bf5292ceea
+bus-traffic: photo-1570125909232-eb263c188f7e
+faucet: photo-1437482078695-73f5ca6c96e2
+camera: photo-1516035069371-29a1b244cc32
+car-dash: photo-1503376780353-7e6692767b70
+food: photo-1547592180-85f173990554
+office: photo-1497366754035-f200968a6e72
+
