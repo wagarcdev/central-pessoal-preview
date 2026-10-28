@@ -12,7 +12,11 @@
       "area": "tech",
       "status": "attention",
       "inference": {
-        "state": "processing"
+        "state": "processing",
+        "observedAt": "2026-10-28T03:00:33.364Z",
+        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "source": "demo-only",
+        "reference": "fictitious-run-0"
       },
       "summary": "Este módulo é fictício e demonstra a navegação visual.",
       "nextAction": "Explorar tarefas ilustrativas deste módulo",
@@ -52,7 +56,11 @@
       "area": "property",
       "status": "attention",
       "inference": {
-        "state": "waiting_input"
+        "state": "waiting_input",
+        "observedAt": "2026-10-28T03:00:33.365Z",
+        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "source": "demo-only",
+        "reference": "fictitious-run-1"
       },
       "summary": "Este módulo é fictício e demonstra a navegação visual.",
       "nextAction": "Explorar tarefas ilustrativas deste módulo",
@@ -91,7 +99,11 @@
       "area": "legal",
       "status": "watch",
       "inference": {
-        "state": "completed"
+        "state": "completed",
+        "observedAt": "2026-10-28T03:00:33.365Z",
+        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "source": "demo-only",
+        "reference": "fictitious-run-2"
       },
       "summary": "Este módulo é fictício e demonstra a navegação visual.",
       "nextAction": "Explorar tarefas ilustrativas deste módulo",
@@ -124,7 +136,11 @@
       "area": "business",
       "status": "active",
       "inference": {
-        "state": "idle"
+        "state": "idle",
+        "observedAt": "2026-10-28T03:00:33.365Z",
+        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "source": "demo-only",
+        "reference": "fictitious-run-3"
       },
       "summary": "Este módulo é fictício e demonstra a navegação visual.",
       "nextAction": "Explorar tarefas ilustrativas deste módulo",
@@ -164,7 +180,11 @@
       "area": "personal",
       "status": "watch",
       "inference": {
-        "state": "processing"
+        "state": "processing",
+        "observedAt": "2026-10-28T03:00:33.365Z",
+        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "source": "demo-only",
+        "reference": "fictitious-run-4"
       },
       "summary": "Este módulo é fictício e demonstra a navegação visual.",
       "nextAction": "Explorar tarefas ilustrativas deste módulo",
@@ -197,7 +217,11 @@
       "area": "business",
       "status": "active",
       "inference": {
-        "state": "waiting_input"
+        "state": "waiting_input",
+        "observedAt": "2026-10-28T03:00:33.365Z",
+        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "source": "demo-only",
+        "reference": "fictitious-run-5"
       },
       "summary": "Este módulo é fictício e demonstra a navegação visual.",
       "nextAction": "Explorar tarefas ilustrativas deste módulo",
@@ -230,7 +254,11 @@
       "area": "personal",
       "status": "watch",
       "inference": {
-        "state": "unmonitored"
+        "state": "unmonitored",
+        "observedAt": "2026-10-28T03:00:33.365Z",
+        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "source": "demo-only",
+        "reference": "fictitious-run-6"
       },
       "summary": "Este módulo é fictício e demonstra a navegação visual.",
       "nextAction": "Explorar tarefas ilustrativas deste módulo",
@@ -263,7 +291,11 @@
       "area": "tech",
       "status": "active",
       "inference": {
-        "state": "processing"
+        "state": "processing",
+        "observedAt": "2026-10-28T03:00:33.365Z",
+        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "source": "demo-only",
+        "reference": "fictitious-run-7"
       },
       "summary": "Este módulo é fictício e demonstra a navegação visual.",
       "nextAction": "Explorar tarefas ilustrativas deste módulo",

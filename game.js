@@ -8,7 +8,7 @@ const mediaPath=src=>/^assets\/[a-z0-9-]+\.webp$/.test(src||'')?'./'+src:null;
 const externalUrl=src=>{try{const u=new URL(src);return u.protocol==='https:'?u.href:null}catch{return null}};
 let database={items:[],updatedAt:null,version:'0.3'},view='all',search='',selected=null,lastFocus=null,timer;
 const calendarDays=date=>{if(!date)return null;const d=new Date(date+'T12:00:00');if(Number.isNaN(d.getTime()))return null;const n=new Date();n.setHours(12,0,0,0);return Math.round((d-n)/86400000)};
-function attention(item){const delta=calendarDays(item.dueDate);return item.status==='attention'||(delta!==null&&delta<=7&&item.status!=='done')}
+function attention(item){const delta=calendarDays(item.dueDate);return agentStatus(item).css==='waiting'||item.status==='attention'||(delta!==null&&delta<=7&&item.status!=='done')}
 function model(item){const tasks=Array.isArray(item.tasks)?item.tasks:[];return{tasks,total:tasks.length,done:tasks.filter(x=>x.state==='done').length,busy:tasks.filter(x=>x.state==='in_progress').length}}
 function photo(item){return mediaPath(item.media?.src)||'./assets/office.webp'}
 function displayTitle(item){return item.shortTitle||String(item.title||'Sem título').split(' · ')[0]}
@@ -22,7 +22,15 @@ const inferenceStates={
 };
 function agentStatus(item){
   // Never infer live telemetry from project activity or completed milestones.
-  return inferenceStates[item.inference?.state]||inferenceStates.unmonitored;
+  const telemetry=item.inference;
+  if(!telemetry||telemetry.state==='unmonitored')return inferenceStates.unmonitored;
+  // Stale or unverified data is never displayed as an active inference.
+  if(database.dataset!=='fictitious-public-demo'){
+    const until=Date.parse(telemetry.expiresAt||'');
+    const since=Date.parse(telemetry.observedAt||'');
+    if(!Number.isFinite(until)||!Number.isFinite(since)||until<Date.now()||since>Date.now()+60000||!telemetry.source||!telemetry.reference)return inferenceStates.unmonitored;
+  }
+  return inferenceStates[telemetry.state]||inferenceStates.unmonitored;
 }
 function taskProgress(item){
   const tasks=model(item).tasks;
