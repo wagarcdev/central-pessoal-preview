@@ -14,7 +14,13 @@ const types={
  cameras:{label:'CÂMERAS',symbol:'◎'},transit:{label:'MOBILIDADE',symbol:'◇'}
 };
 const taskStates={in_progress:'EM CURSO',pending:'PENDENTE',waiting:'AGUARDANDO',done:'CONCLUÍDA'};
-const taskIcons={in_progress:'◐',pending:'○',waiting:'◷',done:'✓'};
+const svgIcon=(path)=>'<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+path+'</svg>';
+const taskIcons={
+ in_progress:svgIcon('<circle cx="12" cy="12" r="9" opacity=".4"/><path d="M12 3a9 9 0 0 1 9 9"/><path d="m17 11 4 1 1-4"/>'),
+ pending:svgIcon('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+ waiting:svgIcon('<circle cx="12" cy="12" r="9"/><path d="M9 8v8M15 8v8"/>'),
+ done:svgIcon('<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>')
+}
 let snapshot,subject,filter='active',showAll=false,wapsRegistry=null;
 function telemetry(){
  const status=subject.inference;
@@ -69,7 +75,7 @@ function actionStrip(){
  const main=blockers.find(x=>x.state==='open')||null;
  return '<section class="action-strip" aria-label="O que precisa de atenção">'+
  '<div class="action-core"><span class="micro-heading"><span class="flash">◆</span> PRÓXIMA AÇÃO</span><p id="next-action">'+escapeHTML(subject.nextAction||'Nenhuma intervenção registrada')+'</p></div>'+
- '<div class="blocker"><span class="micro-heading">IMPEDIMENTOS</span><p class="'+(main?'with-blocker':'')+'">'+(main?escapeHTML(main.title):'Nenhum bloqueio registrado')+'</p></div></section>';
+ '<div class="blocker'+(main?' has-blocker':'')+'"><span class="micro-heading">IMPEDIMENTOS</span><p class="'+(main?'with-blocker':'')+'">'+(main?escapeHTML(main.title):'Nenhum bloqueio registrado')+'</p></div></section>';
 }
 function taskRow(task){
  const progress=measured(task),label=taskStates[task.state]||'PENDENTE',icon=taskIcons[task.state]||'○';
@@ -86,9 +92,9 @@ function taskPanel(){
  const candidates=filter==='all'?taskOrder(all):filter==='active'?taskOrder(all.filter(t=>t.state!=='done')):all.filter(t=>t.state===filter);
  const slice=(showAll||filter!=='active')?candidates:candidates.slice(0,4);
  const remaining=Math.max(0,candidates.length-slice.length);
- const tabs=[['active','ATIVAS'],['all','TODAS'],['in_progress','EM CURSO'],['waiting','AGUARDANDO'],['done','CONCLUÍDAS']];
+ const tabs=[['active','ATIVAS','ATIVAS'],['all','TODAS','TODAS'],['in_progress','EM CURSO','CURSO'],['waiting','AGUARDANDO','ESPERA'],['done','CONCLUÍDAS','FEITAS']];
  return '<section class="tasks-section" id="tasks"><div class="section-head"><h2>TAREFAS</h2><span>'+all.filter(t=>t.state!=='done').length+' EM ABERTO</span></div>'+
- '<nav class="filters" aria-label="Filtrar tarefas">'+tabs.map(([key,value])=>'<button class="filter '+(filter===key?'selected':'')+'" data-filter="'+key+'" type="button" aria-pressed="'+String(filter===key)+'">'+value+'</button>').join('')+'</nav>'+
+ '<nav class="filters" aria-label="Filtrar tarefas">'+tabs.map(([key,value,short])=>'<button class="filter '+(filter===key?'selected':'')+'" data-filter="'+key+'" type="button" aria-label="'+value+'" aria-pressed="'+String(filter===key)+'"><span class="filter-full">'+value+'</span><span class="filter-short">'+short+'</span></button>').join('')+'</nav>'+
  '<div class="task-list" id="task-list">'+(slice.length?slice.map(taskRow).join(''):'<p class="empty">Nenhuma tarefa neste filtro.</p>')+'</div>'+
  (remaining?'<button class="more" id="show-all" type="button">MOSTRAR MAIS '+remaining+' TAREFA(S) ↓</button>':'')+'</section>';
 }

@@ -80,3 +80,33 @@
 @media(max-width:345px){.connection{font-size:0}.signal-state{font-size:7px}}
 
 .module:target,.module.return-target{border-color:#dbf3bd;box-shadow:0 0 0 2px #bafa9880}
+
+
+/* v0.7.1 shared semantic color language for inference indicators on home. */
+.module-inference{background:linear-gradient(120deg,#1e2734,#111b27);border-right:1px solid #596979a8}
+.cat-glyph{color:#d9e3f3}
+.cat-label{color:#c0ccda}
+.status-unmonitored.module-inference{background:linear-gradient(120deg,#293343,#141c2a)}
+.status-unmonitored .signal-state{color:#c9d3e3}
+.status-unmonitored .signal-state i{background:#aab8cd}
+.status-processing.module-inference{background:linear-gradient(120deg,#193744,#12232f)}
+.status-processing .signal-state{color:#a4edff}
+.status-processing .signal-state i{background:#8fe8ff;box-shadow:0 0 9px #7de5ff80}
+.status-waiting.module-inference{background:linear-gradient(120deg,#3c2c23,#211f24)}
+.status-waiting .signal-state{color:#ffdfa9}
+.status-waiting .signal-state i{background:#ffd399}
+.status-completed.module-inference{background:linear-gradient(120deg,#203e30,#15251f)}
+.status-completed .signal-state{color:#aff0c7}
+.status-completed .signal-state i{background:#aef1c8}
+.status-idle.module-inference{background:linear-gradient(120deg,#293343,#171f2b)}
+.status-idle .signal-state{color:#c4d0df}
+.status-idle .signal-state i{background:#aab8cd}
+.signal-state{font-size:11px;letter-spacing:.45px}
+.signal-state i{width:11px;height:11px;box-shadow:0 0 0 2px #ffffff12}
+.tabs .tab.selected{background:#32384c;color:#eaeaff;border-color:#66728f}
+.attention-pip{background:#ffd399}
+@media(max-width:610px){
+ .signal-state{font-size:9px;letter-spacing:0;gap:6px}
+ .signal-state i{width:9px;height:9px}
+}
+@media(max-width:345px){.signal-state{font-size:8px}.signal-state i{width:8px;height:8px}}
