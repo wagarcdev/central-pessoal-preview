@@ -50,7 +50,7 @@ function tile(item){
       (alert?'<span class="attention-pip" title="Sua intervenção necessária" aria-label="Sua intervenção necessária">!</span>':'')+
       '<span class="progress-wrap">'+
         '<span class="progress-track'+(pct===null?' progress-unmeasured':'')+'" role="progressbar" aria-label="Progresso medido da tarefa atual em '+escapeHTML(displayTitle(item))+'"'+(pct===null?' aria-valuetext="Sem medição disponível"':' aria-valuenow="'+pct+'" aria-valuemin="0" aria-valuemax="100"')+'>'+
-          '<span class="progress-fill" style="width:'+(pct===null?0:pct)+'%"></span>'+
+          '<span class="progress-fill" data-percent="'+(pct===null?0:pct)+'"></span>'+
         '</span>'+
         '<span class="progress-note">'+(pct===null?'PROGRESSO NÃO MEDIDO':pct+'% DA TAREFA')+'</span>'+
       '</span>'+
@@ -61,6 +61,7 @@ function render(){
  $('#need-count').textContent=database.items.filter(attention).length;
  $('#list-label').textContent=view==='all'?'TODOS OS MÓDULOS':view==='watch'?'NO RADAR':'INTERVENÇÃO NECESSÁRIA';
  $('#tiles').innerHTML=list.length?list.map(tile).join(''):'<div class="empty">Nenhum módulo encontrado neste filtro.</div>';
+ document.querySelectorAll('.progress-fill').forEach(el=>{el.style.width=Math.max(0,Math.min(100,Number(el.dataset.percent)||0))+'%'});
  document.querySelectorAll('[data-id]').forEach(el=>el.addEventListener('click',()=>openModule(el.dataset.id)));
  document.querySelectorAll('[data-view]').forEach(el=>{el.classList.toggle('selected',el.dataset.view===view);el.setAttribute('aria-pressed',String(el.dataset.view===view))});
  const d=database.updatedAt?.slice(0,10);$('#updated').textContent=d?'SNAPSHOT · '+new Date(d+'T12:00:00').toLocaleDateString('pt-BR'):'Snapshot estático';
@@ -87,7 +88,7 @@ function openModule(id){
  (logo?'<img class="detail-brand" src="'+escapeHTML(logo)+'" alt="" aria-hidden="true">':'')+
  '<div class="detail-overlay"><span class="area">'+escapeHTML(labels[item.area]||item.area).toUpperCase()+'</span>'+
  '<h2 id="detail-title">'+escapeHTML(displayTitle(item))+'</h2><p>'+escapeHTML(item.subtitle||item.summary)+'</p>'+
- '<div class="detail-progress"><i style="width:'+(taskProgress(item).value??0)+'%"></i></div></div></section>'+
+ '<div class="detail-progress"><i data-percent="'+(taskProgress(item).value??0)+'"></i></div></div></section>'+
  '<section class="detail-content"><div class="detail-head"><span class="detail-kicker">MÓDULO / TAREFAS</span><button id="close" class="close" aria-label="Fechar painel">✕</button></div>'+
  '<div class="progress-caption"><span>ETAPAS CONCLUÍDAS: '+m.done+' / '+m.total+'</span><span>TAREFA ATUAL: '+(taskProgress(item).value===null?'SEM MEDIÇÃO':taskProgress(item).value+'%')+'</span></div>'+
  (m.total?['in_progress','pending','waiting','done'].map(state=>groupTasks(m.tasks,state)).join(''):'<p class="detail-note">Ainda não foram definidas etapas verificáveis para este módulo.</p>')+
@@ -95,7 +96,7 @@ function openModule(id){
  '<button class="secondary" id="copy" type="button">Copiar contexto ↗</button></div>'+
  '<p class="context-note">Snapshot estático do GitHub. As etapas são um planejamento inicial, não atividade monitorada em tempo real. Alterações são versionadas no repositório.</p>'+
  '</section></div>';
- $('#detail-root').innerHTML=content;$('#overlay').hidden=false;document.body.style.overflow='hidden';
+ $('#detail-root').innerHTML=content;$('#detail-root .detail-progress i').style.width=(taskProgress(item).value??0)+'%';$('#overlay').hidden=false;document.body.style.overflow='hidden';
  $('#close').addEventListener('click',closeModule);$('#close').focus();
  document.querySelectorAll('[data-task]').forEach(button=>button.addEventListener('click',()=>{
    const panel=button.nextElementSibling,was=!panel.hidden;
