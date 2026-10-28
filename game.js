@@ -45,7 +45,7 @@ function tile(item){
   const label=labels[item.area]||item.area;
   const pct=progress.value;
   const alert=attention(item);
-  return '<article class="module"><button type="button" class="module-button" data-id="'+escapeHTML(item.id)+'" aria-label="Abrir '+escapeHTML(item.title)+'">'+
+  return '<article class="module" id="item-'+escapeHTML(item.id)+'"><button type="button" class="module-button" data-id="'+escapeHTML(item.id)+'" aria-label="Abrir dashboard de '+escapeHTML(item.title)+'">'+
     '<span class="module-inference status-'+status.css+'">'+
       '<span class="cat-glyph" aria-hidden="true">'+escapeHTML(categoryGlyphs[item.area]||'◇')+'</span>'+
       '<span class="cat-label">'+escapeHTML(label)+'</span>'+
@@ -70,7 +70,8 @@ function render(){
  $('#list-label').textContent=view==='all'?'TODOS OS MÓDULOS':view==='watch'?'NO RADAR':'INTERVENÇÃO NECESSÁRIA';
  $('#tiles').innerHTML=list.length?list.map(tile).join(''):'<div class="empty">Nenhum módulo encontrado neste filtro.</div>';
  document.querySelectorAll('.progress-fill').forEach(el=>{el.style.width=Math.max(0,Math.min(100,Number(el.dataset.percent)||0))+'%'});
- document.querySelectorAll('[data-id]').forEach(el=>el.addEventListener('click',()=>openModule(el.dataset.id)));
+ document.querySelectorAll('[data-id]').forEach(el=>el.addEventListener('click',()=>{location.href='./project.html?id='+encodeURIComponent(el.dataset.id)}));
+ const target=location.hash&&document.getElementById(decodeURIComponent(location.hash.slice(1)));if(target)target.scrollIntoView({block:'center'});
  document.querySelectorAll('[data-view]').forEach(el=>{el.classList.toggle('selected',el.dataset.view===view);el.setAttribute('aria-pressed',String(el.dataset.view===view))});
  const d=database.updatedAt?.slice(0,10);$('#updated').textContent=d?'SNAPSHOT · '+new Date(d+'T12:00:00').toLocaleDateString('pt-BR'):'Snapshot estático';
  $('#version').textContent='CENTRAL / V'+(database.version||'0.3');

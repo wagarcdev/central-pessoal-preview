@@ -1,5 +1,5 @@
 {
-  "version": "0.4.0-demo",
+  "version": "0.6.0-demo",
   "updatedAt": "2026-10-27T20:06:00-03:00",
   "dataset": "fictitious-public-demo",
   "disclaimer": "Dados e progresso inteiramente fictícios; nenhuma tarefa real.",
@@ -13,8 +13,8 @@
       "status": "attention",
       "inference": {
         "state": "processing",
-        "observedAt": "2026-10-28T03:00:33.364Z",
-        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "observedAt": "2026-10-28T03:31:55.347Z",
+        "expiresAt": "2026-10-28T04:31:55.348Z",
         "source": "demo-only",
         "reference": "fictitious-run-0"
       },
@@ -25,6 +25,24 @@
       "media": {
         "src": "assets/code-screens.webp",
         "alt": "Fotografia ilustrativa licenciada da Unsplash"
+      },
+      "visual": {
+        "theme": "agents",
+        "eyebrow": "Exemplo fictício",
+        "facets": [
+          {
+            "label": "Painel",
+            "value": "Demonstração"
+          },
+          {
+            "label": "Atividade",
+            "value": "Simulada"
+          },
+          {
+            "label": "Situação",
+            "value": "Exploratória"
+          }
+        ]
       },
       "tasks": [
         {
@@ -57,8 +75,8 @@
       "status": "attention",
       "inference": {
         "state": "waiting_input",
-        "observedAt": "2026-10-28T03:00:33.365Z",
-        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "observedAt": "2026-10-28T03:31:55.348Z",
+        "expiresAt": "2026-10-28T04:31:55.348Z",
         "source": "demo-only",
         "reference": "fictitious-run-1"
       },
@@ -69,6 +87,24 @@
       "media": {
         "src": "assets/office.webp",
         "alt": "Fotografia ilustrativa licenciada da Unsplash"
+      },
+      "visual": {
+        "theme": "stay",
+        "eyebrow": "Exemplo fictício",
+        "facets": [
+          {
+            "label": "Painel",
+            "value": "Demonstração"
+          },
+          {
+            "label": "Atividade",
+            "value": "Simulada"
+          },
+          {
+            "label": "Situação",
+            "value": "Exploratória"
+          }
+        ]
       },
       "tasks": [
         {
@@ -100,8 +136,8 @@
       "status": "watch",
       "inference": {
         "state": "completed",
-        "observedAt": "2026-10-28T03:00:33.365Z",
-        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "observedAt": "2026-10-28T03:31:55.348Z",
+        "expiresAt": "2026-10-28T04:31:55.348Z",
         "source": "demo-only",
         "reference": "fictitious-run-2"
       },
@@ -112,6 +148,24 @@
       "media": {
         "src": "assets/law-gavel.webp",
         "alt": "Fotografia ilustrativa licenciada da Unsplash"
+      },
+      "visual": {
+        "theme": "archive",
+        "eyebrow": "Exemplo fictício",
+        "facets": [
+          {
+            "label": "Painel",
+            "value": "Demonstração"
+          },
+          {
+            "label": "Atividade",
+            "value": "Simulada"
+          },
+          {
+            "label": "Situação",
+            "value": "Exploratória"
+          }
+        ]
       },
       "tasks": [
         {
@@ -137,8 +191,8 @@
       "status": "active",
       "inference": {
         "state": "idle",
-        "observedAt": "2026-10-28T03:00:33.365Z",
-        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "observedAt": "2026-10-28T03:31:55.348Z",
+        "expiresAt": "2026-10-28T04:31:55.348Z",
         "source": "demo-only",
         "reference": "fictitious-run-3"
       },
@@ -149,6 +203,24 @@
       "media": {
         "src": "assets/nightclub.webp",
         "alt": "Fotografia ilustrativa licenciada da Unsplash"
+      },
+      "visual": {
+        "theme": "events",
+        "eyebrow": "Exemplo fictício",
+        "facets": [
+          {
+            "label": "Painel",
+            "value": "Demonstração"
+          },
+          {
+            "label": "Atividade",
+            "value": "Simulada"
+          },
+          {
+            "label": "Situação",
+            "value": "Exploratória"
+          }
+        ]
       },
       "tasks": [
         {
@@ -181,8 +253,8 @@
       "status": "watch",
       "inference": {
         "state": "processing",
-        "observedAt": "2026-10-28T03:00:33.365Z",
-        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "observedAt": "2026-10-28T03:31:55.348Z",
+        "expiresAt": "2026-10-28T04:31:55.348Z",
         "source": "demo-only",
         "reference": "fictitious-run-4"
       },
@@ -193,6 +265,24 @@
       "media": {
         "src": "assets/beach.webp",
         "alt": "Fotografia ilustrativa licenciada da Unsplash"
+      },
+      "visual": {
+        "theme": "ledger",
+        "eyebrow": "Exemplo fictício",
+        "facets": [
+          {
+            "label": "Painel",
+            "value": "Demonstração"
+          },
+          {
+            "label": "Atividade",
+            "value": "Simulada"
+          },
+          {
+            "label": "Situação",
+            "value": "Exploratória"
+          }
+        ]
       },
       "tasks": [
         {
@@ -218,8 +308,8 @@
       "status": "active",
       "inference": {
         "state": "waiting_input",
-        "observedAt": "2026-10-28T03:00:33.365Z",
-        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "observedAt": "2026-10-28T03:31:55.348Z",
+        "expiresAt": "2026-10-28T04:31:55.348Z",
         "source": "demo-only",
         "reference": "fictitious-run-5"
       },
@@ -230,6 +320,24 @@
       "media": {
         "src": "assets/bus-traffic.webp",
         "alt": "Fotografia ilustrativa licenciada da Unsplash"
+      },
+      "visual": {
+        "theme": "transit",
+        "eyebrow": "Exemplo fictício",
+        "facets": [
+          {
+            "label": "Painel",
+            "value": "Demonstração"
+          },
+          {
+            "label": "Atividade",
+            "value": "Simulada"
+          },
+          {
+            "label": "Situação",
+            "value": "Exploratória"
+          }
+        ]
       },
       "tasks": [
         {
@@ -255,8 +363,8 @@
       "status": "watch",
       "inference": {
         "state": "unmonitored",
-        "observedAt": "2026-10-28T03:00:33.365Z",
-        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "observedAt": "2026-10-28T03:31:55.348Z",
+        "expiresAt": "2026-10-28T04:31:55.348Z",
         "source": "demo-only",
         "reference": "fictitious-run-6"
       },
@@ -267,6 +375,24 @@
       "media": {
         "src": "assets/camera.webp",
         "alt": "Fotografia ilustrativa licenciada da Unsplash"
+      },
+      "visual": {
+        "theme": "cameras",
+        "eyebrow": "Exemplo fictício",
+        "facets": [
+          {
+            "label": "Painel",
+            "value": "Demonstração"
+          },
+          {
+            "label": "Atividade",
+            "value": "Simulada"
+          },
+          {
+            "label": "Situação",
+            "value": "Exploratória"
+          }
+        ]
       },
       "tasks": [
         {
@@ -292,8 +418,8 @@
       "status": "active",
       "inference": {
         "state": "processing",
-        "observedAt": "2026-10-28T03:00:33.365Z",
-        "expiresAt": "2026-10-28T04:00:33.365Z",
+        "observedAt": "2026-10-28T03:31:55.348Z",
+        "expiresAt": "2026-10-28T04:31:55.348Z",
         "source": "demo-only",
         "reference": "fictitious-run-7"
       },
@@ -304,6 +430,24 @@
       "media": {
         "src": "assets/car-dash.webp",
         "alt": "Fotografia ilustrativa licenciada da Unsplash"
+      },
+      "visual": {
+        "theme": "cockpit",
+        "eyebrow": "Exemplo fictício",
+        "facets": [
+          {
+            "label": "Painel",
+            "value": "Demonstração"
+          },
+          {
+            "label": "Atividade",
+            "value": "Simulada"
+          },
+          {
+            "label": "Situação",
+            "value": "Exploratória"
+          }
+        ]
       },
       "tasks": [
         {
@@ -323,6 +467,120 @@
           "id": "example-7-2",
           "title": "Executar testes",
           "state": "pending",
+          "detail": "Etapa fictícia usada apenas para demonstrar o submenu de atividades."
+        }
+      ]
+    },
+    {
+      "id": "sample-9",
+      "title": "Culinária experimental",
+      "shortTitle": "Culinária experimental",
+      "subtitle": "Receitas de demonstração",
+      "area": "personal",
+      "status": "active",
+      "inference": {
+        "observedAt": "2026-10-28T03:31:55.348Z",
+        "expiresAt": "2026-10-28T04:31:55.348Z",
+        "source": "demo-only",
+        "reference": "fictitious-run-8"
+      },
+      "summary": "Este módulo é fictício e demonstra a navegação visual.",
+      "nextAction": "Explorar tarefas ilustrativas deste módulo",
+      "dueDate": null,
+      "link": null,
+      "media": {
+        "src": "assets/food.webp",
+        "alt": "Fotografia ilustrativa licenciada da Unsplash"
+      },
+      "visual": {
+        "theme": "kitchen",
+        "eyebrow": "Exemplo fictício",
+        "facets": [
+          {
+            "label": "Painel",
+            "value": "Demonstração"
+          },
+          {
+            "label": "Atividade",
+            "value": "Simulada"
+          },
+          {
+            "label": "Situação",
+            "value": "Exploratória"
+          }
+        ]
+      },
+      "tasks": [
+        {
+          "id": "example-8-0",
+          "title": "Organizar receitas",
+          "state": "done",
+          "detail": "Etapa fictícia usada apenas para demonstrar o submenu de atividades."
+        },
+        {
+          "id": "example-8-1",
+          "title": "Desenhar interface",
+          "state": "pending",
+          "detail": "Etapa fictícia usada apenas para demonstrar o submenu de atividades."
+        },
+        {
+          "id": "example-8-2",
+          "title": "Testar usabilidade",
+          "state": "waiting",
+          "detail": "Etapa fictícia usada apenas para demonstrar o submenu de atividades."
+        }
+      ]
+    },
+    {
+      "id": "sample-10",
+      "title": "Água e serviços",
+      "shortTitle": "Água e serviços",
+      "subtitle": "Acompanhamento genérico",
+      "area": "personal",
+      "status": "watch",
+      "inference": {
+        "observedAt": "2026-10-28T03:31:55.348Z",
+        "expiresAt": "2026-10-28T04:31:55.348Z",
+        "source": "demo-only",
+        "reference": "fictitious-run-9"
+      },
+      "summary": "Este módulo é fictício e demonstra a navegação visual.",
+      "nextAction": "Explorar tarefas ilustrativas deste módulo",
+      "dueDate": null,
+      "link": null,
+      "media": {
+        "src": "assets/faucet.webp",
+        "alt": "Fotografia ilustrativa licenciada da Unsplash"
+      },
+      "visual": {
+        "theme": "water",
+        "eyebrow": "Exemplo fictício",
+        "facets": [
+          {
+            "label": "Painel",
+            "value": "Demonstração"
+          },
+          {
+            "label": "Atividade",
+            "value": "Simulada"
+          },
+          {
+            "label": "Situação",
+            "value": "Exploratória"
+          }
+        ]
+      },
+      "tasks": [
+        {
+          "id": "example-9-0",
+          "title": "Reunir registros",
+          "state": "pending",
+          "detail": "Etapa fictícia usada apenas para demonstrar o submenu de atividades."
+        },
+        {
+          "id": "example-9-1",
+          "title": "Revisar status",
+          "state": "waiting",
           "detail": "Etapa fictícia usada apenas para demonstrar o submenu de atividades."
         }
       ]
