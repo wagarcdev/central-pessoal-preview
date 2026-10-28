@@ -71,7 +71,7 @@ function render(){
  $('#tiles').innerHTML=list.length?list.map(tile).join(''):'<div class="empty">Nenhum módulo encontrado neste filtro.</div>';
  document.querySelectorAll('.progress-fill').forEach(el=>{el.style.width=Math.max(0,Math.min(100,Number(el.dataset.percent)||0))+'%'});
  document.querySelectorAll('[data-id]').forEach(el=>el.addEventListener('click',()=>{location.href='./project.html?id='+encodeURIComponent(el.dataset.id)}));
- const target=location.hash&&document.getElementById(decodeURIComponent(location.hash.slice(1)));if(target)target.scrollIntoView({block:'center'});
+ const target=location.hash&&document.getElementById(location.hash.slice(1));if(target){target.classList.add('return-target');target.scrollIntoView({block:'center'})}
  document.querySelectorAll('[data-view]').forEach(el=>{el.classList.toggle('selected',el.dataset.view===view);el.setAttribute('aria-pressed',String(el.dataset.view===view))});
  const d=database.updatedAt?.slice(0,10);$('#updated').textContent=d?'SNAPSHOT · '+new Date(d+'T12:00:00').toLocaleDateString('pt-BR'):'Snapshot estático';
  $('#version').textContent='CENTRAL / V'+(database.version||'0.3');

@@ -79,4 +79,4 @@
 @media(max-width:610px){.connection{font-size:9px;letter-spacing:.3px}.signal-state{font-size:7.7px}}
 @media(max-width:345px){.connection{font-size:0}.signal-state{font-size:7px}}
 
-.module:target{border-color:#dbf3bd;box-shadow:0 0 0 2px #bafa9880}
+.module:target,.module.return-target{border-color:#dbf3bd;box-shadow:0 0 0 2px #bafa9880}
