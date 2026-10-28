@@ -1,127 +1,162 @@
 'use strict';
-// Every module reads the same versioned JSON. No backend, third-party API or personal data in scripts.
-const $=s=>document.querySelector(s);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const localAsset=s=>typeof s==='string'&&/^assets\/[a-z0-9-]+\.webp$/.test(s)?'./'+s:null;
-const safeLink=s=>{try{const u=new URL(s);return u.protocol==='https:'?u.href:null}catch{return null}};
-const allowedThemes=new Set(['kitchen','cockpit','stay','ledger','archive','water','agents','events','cameras','transit']);
-const areaNames={tech:'Tecnologia',legal:'Jurídico',property:'Imóveis',business:'Negócios',personal:'Pessoal'};
-const states={pending:'A fazer',in_progress:'Em andamento',waiting:'Aguardando',done:'Concluída'};
-let snapshot,item,currentFilter='all';
-const validTheme=s=>allowedThemes.has(s)?s:'agents';
-function currentAgent(x){
- const status=x.inference||{state:'unmonitored'};
- if(status.state==='unmonitored')return {text:'SEM TELEMETRIA',tone:'silent'};
- const expiry=Date.parse(status.expiresAt||'');
- const valid=snapshot.dataset==='fictitious-public-demo'||(expiry>Date.now()&&Date.parse(status.observedAt||'')<=Date.now()+60000&&status.source&&status.reference);
- if(!valid)return {text:'SEM TELEMETRIA',tone:'silent'};
- const names={processing:['INFERINDO','active'],waiting_input:['AGUARDANDO VOCÊ','warn'],completed:['CONCLUÍDO','ok'],idle:['OCIOSO','idle']};
- const match=names[status.state];return match?{text:match[0],tone:match[1]}:{text:'SEM TELEMETRIA',tone:'silent'};
-}
-function imageTag(src,cls,alt='Imagem temática'){
- const value=localAsset(src);
- return value?'<img class="'+cls+'" src="'+esc(value)+'" alt="'+esc(alt)+'" decoding="async">':'';
-}
-function art(x,theme){
- const main=x.media?.src,secondary=x.visual?.secondary,brand=x.brand?.src;
- const shot=imageTag(secondary||main,'art-shot','Imagem de referência do assunto');
- const mark=brand?imageTag(brand,'art-brand',''):null;
- switch(theme){
- case 'kitchen':return '<div class="kitchen-composition"><div class="ingredient-ring"></div><div class="phone-device">'+shot+'</div><span class="recipe-stamp">RECEITAS<br><b>EM CONSTRUÇÃO</b></span></div>';
- case 'cockpit':return '<div class="cockpit-composition">'+(mark||'<span class="cockpit-monogram">◈</span>')+'<div class="gauge gauge-obd"><strong>OBD2</strong><small>A VALIDAR</small></div><div class="gauge gauge-gps"><strong>GPS</strong><small>A VALIDAR</small></div><span class="dash-grid"></span></div>';
- case 'stay':return '<div class="stay-composition"><div class="stay-polaroid">'+shot+'</div><span class="stay-label">HOSPITALIDADE<br><b>OPERAÇÃO</b></span></div>';
- case 'ledger':return '<div class="ledger-composition"><div class="ledger-folio"><div class="folio-lines"></div><strong>CONTAS</strong><small>DESPESAS · RECEITAS · COMPROVANTES</small></div></div>';
- case 'archive':return '<div class="archive-composition"><div class="archive-file"><span>DOCUMENTOS</span><b>01</b></div><div class="archive-file alt"><span>PROCESSO</span><b>02</b></div><span class="archive-seal">EM REVISÃO</span></div>';
- case 'water':return '<div class="water-composition"><div class="water-circle"><span>PROTOCOLOS</span><strong>◉</strong></div><div class="water-waves"><i></i><i></i><i></i></div></div>';
- case 'agents':return '<div class="agents-composition"><div class="agent-node n1"><i></i>AGENTES</div><div class="agent-node n2"><i></i>TOOLS</div><div class="agent-node n3"><i></i>HARNESS</div><span class="agents-wires"></span></div>';
- case 'events':return '<div class="events-composition"><div class="event-ticket"><small>CURADORIA</small><strong>AGENDA</strong><span>\\/\\/\\/\\/\\/</span></div><div class="event-orb"></div></div>';
- case 'cameras':return '<div class="cameras-composition"><div class="camera-frame"><div class="camera-grain"></div><span>FONTE NÃO CONECTADA</span><b>CAM 01</b></div><div class="camera-frame secondary"><span>SEM SINAL</span><b>CAM 02</b></div></div>';
- case 'transit':return '<div class="transit-composition"><div class="transit-path"><b>●</b><i></i><b>●</b><i></i><b>●</b></div><div class="transit-plate">TRAJETOS<br><strong>EM ESTUDO</strong></div></div>';
+// Compact operational detail. Everything displayed comes from the private snapshot.
+const $ = (s,root=document)=>root.querySelector(s);
+const $$ = (s,root=document)=>[...root.querySelectorAll(s)];
+const escapeHTML = value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+const verifiedAsset = src=>typeof src==='string' && /^assets\/[a-z0-9-]+\.webp$/.test(src) ? './'+src : null;
+const verifiedLink = value=>{try{const u=new URL(value);return u.protocol==='https:'?u.href:null}catch{return null}};
+const names={tech:'Tecnologia',legal:'Jurídico',property:'Imóveis',business:'Negócios',personal:'Pessoal'};
+const types={
+ kitchen:{label:'RECEITAS',symbol:'◫'},cockpit:{label:'VEÍCULO',symbol:'◉'},
+ stay:{label:'LOCAÇÕES',symbol:'⌂'},ledger:{label:'CONTAS',symbol:'≡'},
+ archive:{label:'DOCUMENTOS',symbol:'▤'},water:{label:'ABASTECIMENTO',symbol:'≈'},
+ agents:{label:'AGENTES',symbol:'⌘'},events:{label:'EVENTOS',symbol:'◈'},
+ cameras:{label:'CÂMERAS',symbol:'◎'},transit:{label:'MOBILIDADE',symbol:'◇'}
+};
+const taskStates={in_progress:'EM CURSO',pending:'PENDENTE',waiting:'AGUARDANDO',done:'CONCLUÍDA'};
+const taskIcons={in_progress:'◐',pending:'○',waiting:'◷',done:'✓'};
+let snapshot,subject,filter='active',showAll=false,wapsRegistry=null;
+function telemetry(){
+ const status=subject.inference;
+ if(!status||status.state==='unmonitored')return {name:'SEM SINAL',kind:'unknown'};
+ if(snapshot.dataset!=='fictitious-public-demo'){
+  const until=Date.parse(status.expiresAt||'');
+  const since=Date.parse(status.observedAt||'');
+  if(!status.reference||!status.source||!Number.isFinite(until)||!Number.isFinite(since)||until<=Date.now()||since>Date.now()+60e3) return {name:'SEM SINAL',kind:'unknown'};
  }
+ const available={processing:['INFERINDO','working'],waiting_input:['AGUARDANDO VOCÊ','waiting'],completed:['CONCLUÍDA','complete'],idle:['OCIOSA','idle']};
+ const s=available[status.state];return s?{name:s[0],kind:s[1]}:{name:'SEM SINAL',kind:'unknown'};
 }
-function activeWork(x){
- const tasks=Array.isArray(x.tasks)?x.tasks:[];
- const running=tasks.find(t=>t.state==='in_progress');
- const candidates=tasks.filter(t=>t.state!=='done');
- return running||candidates[0]||null;
+function measured(task){
+ if(!task||typeof task.progress!=='number'||!Number.isFinite(task.progress)||task.progress<0||task.progress>100)return null;
+ // Production values must be attributable. Demo percentages are explicitly fictitious.
+ if(snapshot.dataset!=='fictitious-public-demo' && !task.progressEvidence && !task.lastUpdate?.evidence)return null;
+ return task.progress;
 }
-function workProgress(x){
- const task=activeWork(x),v=task?.progress;
- return typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=100?v:null;
+function taskOrder(tasks){
+ const rank={in_progress:0,pending:1,waiting:2,done:3};
+ return [...tasks].sort((a,b)=>(rank[a.state]??4)-(rank[b.state]??4));
 }
-function hero(x,theme){
- const status=currentAgent(x),p=workProgress(x);
- const context=x.visual?.eyebrow||areaNames[x.area]||'Projeto';
- return '<section class="scene scene-'+theme+'">'+
- imageTag(x.media?.src,'scene-photo',x.media?.alt||x.title)+
- '<div class="scene-veiling"></div>'+
- '<div class="scene-left"><div class="eyebrow"><span class="eyebrow-line"></span>'+esc(context.toUpperCase())+'</div>'+
- '<h1>'+esc(x.shortTitle||x.title)+'</h1><span class="scene-subtitle">'+esc(x.subtitle||'')+'</span>'+
- '<div class="scene-flags"><span class="live-indicator '+esc(status.tone)+'"><i></i>'+esc(status.text)+'</span><span class="scene-metric">'+(p===null?'PROGRESSO NÃO MEDIDO':p+'% · TAREFA ATUAL')+'</span></div>'+
- '</div><div class="scene-right">'+art(x,theme)+'</div></section>';
+function currentTask(){
+ const tasks=taskOrder(subject.tasks||[]);
+ return tasks.find(t=>t.state==='in_progress')||tasks.find(t=>t.state==='pending')||tasks.find(t=>t.state==='waiting')||null;
 }
-function badge(x){return ({pending:'○',in_progress:'◐',waiting:'⌛',done:'✓'}[x.state]||'○')}
-function taskRows(x){
- const tasks=Array.isArray(x.tasks)?x.tasks:[];
- const subset=currentFilter==='all'?tasks:tasks.filter(t=>t.state===currentFilter);
- if(!subset.length)return '<p class="no-tasks">Nenhuma tarefa neste estado.</p>';
- return subset.map((t,i)=>{
-   const link=safeLink(t.link?.url);
-   return '<div class="mission"><button class="mission-head" type="button" data-task="'+esc(t.id)+'" aria-expanded="false">'+
-     '<span class="mission-index">'+String(tasks.indexOf(t)+1).padStart(2,'0')+'</span>'+
-     '<span class="mission-body"><span class="mission-title">'+esc(t.title)+'</span><span class="mission-state s-'+esc(t.state)+'">'+esc(states[t.state]||t.state)+'</span></span>'+
-     '<span class="mission-mark">'+badge(t)+'</span></button>'+
-     '<div class="mission-expansion" hidden><p>'+esc(t.detail||'Sem detalhes adicionais.')+'</p>'+
-     (link?'<a target="_blank" rel="noopener noreferrer" href="'+esc(link)+'">ABRIR '+esc(t.link.label||'FONTE')+' ↗</a>':'<span>Sem referência externa vinculada</span>')+
-     (typeof t.progress==='number'?'<small>PROGRESSO REGISTRADO: '+t.progress+'%</small>':'')+'</div></div>';
- }).join('');
+function pathToHome(){return './index.html#item-'+encodeURIComponent(subject.id)}
+function itemLink(link){
+ const u=verifiedLink(link?.url);
+ return u?'<a class="source-action" target="_blank" rel="noopener noreferrer" href="'+escapeHTML(u)+'">'+escapeHTML(link.label||'Abrir fonte')+' ↗</a>':'';
 }
-function facets(x){
- const list=Array.isArray(x.visual?.facets)?x.visual.facets:[];
- return list.slice(0,4).map((f,i)=>
- '<div class="facet"><span class="facet-id">'+String(i+1).padStart(2,'0')+'</span><span class="facet-label">'+esc(f.label)+'</span><span class="facet-value">'+esc(f.value||'Em avaliação')+'</span></div>').join('');
+function dueLabel(){
+ if(!subject.dueDate)return '';
+ const [year,month,day]=subject.dueDate.split('-');
+ return '<span class="date-token" title="Data registrada no snapshot">'+day+'/'+month+'/'+year+' · '+(subject.dueType==='verified_deadline'?'PRAZO DOCUMENTADO':'LEMBRETE')+'</span>';
 }
-function links(x){
- const all=[x.link,...(x.tasks||[]).map(t=>t.link)].filter(Boolean),found=new Set();
- return all.map(l=>{const href=safeLink(l.url);if(!href||found.has(href))return '';found.add(href);return '<a class="resource" href="'+esc(href)+'" target="_blank" rel="noopener noreferrer">'+esc(l.label||'Documento')+' <span aria-hidden="true">↗</span></a>'}).filter(Boolean).join('');
+function header(){
+ const theme=types[subject.visual?.theme]||{label:names[subject.area]||'ASSUNTO',symbol:'◈'};
+ const image=verifiedAsset(subject.brand?.src)||verifiedAsset(subject.media?.src);
+ const badge=image?'<img src="'+escapeHTML(image)+'" alt="" loading="eager" decoding="async">':'<span>'+theme.symbol+'</span>';
+ const t=telemetry();
+ const sel=snapshot.items.map(x=>'<option value="'+escapeHTML(x.id)+'"'+(x.id===subject.id?' selected':'')+'>'+escapeHTML(x.shortTitle||x.title)+'</option>').join('');
+ return '<header class="topbar"><a class="back" href="'+pathToHome()+'" aria-label="Voltar à Central">← <span>CENTRAL</span></a>'+
+ '<span class="crumb">'+escapeHTML(theme.label)+'</span>'+
+ '<select class="switcher" id="switcher" aria-label="Trocar de assunto">'+sel+'</select></header>'+
+ '<div class="identity"><div class="identity-image">'+badge+'</div><div class="identity-copy"><span class="eyebrow">'+escapeHTML(theme.label)+' <span>·</span> '+escapeHTML(names[subject.area]||subject.area)+'</span>'+
+ '<h1>'+escapeHTML(subject.shortTitle||subject.title)+'</h1></div>'+
+ '<span class="runtime '+t.kind+'"><i></i><span>IA · '+t.name+'</span></span></div>';
 }
-function controls(x){
- const list=(x.tasks||[]).length,done=(x.tasks||[]).filter(t=>t.state==='done').length;
- const progress=workProgress(x),status=currentAgent(x);
- return '<section class="main-surface" id="tasks">'+
- '<div class="module-pane"><div class="pane-head"><span>ETAPAS / '+list+'</span><strong>'+done+' CONCLUÍDAS</strong></div>'+
- '<div class="task-filters">'+Object.entries({all:'Todas',in_progress:'Em curso',pending:'Pendentes',waiting:'Aguardando',done:'Concluídas'}).map(([key,v])=>'<button type="button" class="filter'+(key===currentFilter?' on':'')+'" data-filter="'+key+'" aria-pressed="'+(key===currentFilter)+'">'+v+'</button>').join('')+'</div>'+
- '<div id="task-list" class="task-list">'+taskRows(x)+'</div></div>'+
- '<aside class="side-pane"><div class="side-label">AGORA</div><h2>'+esc(x.nextAction||'Sem intervenção definida')+'</h2>'+
- '<div class="side-divider"></div><div class="side-label">ESTADO DA IA</div><p class="side-state"><i class="'+esc(status.tone)+'"></i>'+esc(status.text)+'</p>'+
- '<div class="side-divider"></div><div class="side-label">PROGRESSO DA TAREFA</div><div class="side-track"><i id="side-fill"></i></div>'+
- '<span class="side-small">'+(progress===null?'Sem medição confirmada':progress+'% registrados')+'</span>'+
- (x.dueDate?'<div class="side-divider"></div><div class="side-label">DATA REGISTRADA</div><p class="side-small">'+esc(x.dueDate.split('-').reverse().join('/'))+(x.dueType==='verified_deadline'?' · DOCUMENTADA':' · LEMBRETE')+'</p>':'')+
- '<div class="side-divider"></div><div class="side-label">RECURSOS</div><div class="resources">'+(links(x)||'<span class="side-small">Sem link verificado</span>')+'</div>'+
- '<button class="copy-context" type="button" id="copy-context">COPIAR CONTEXTO <span>⧉</span></button></aside></section>';
+function actionStrip(){
+ const blockers=Array.isArray(subject.blockers)?subject.blockers.filter(x=>typeof x==='object'&&x.title):[];
+ const main=blockers.find(x=>x.state==='open')||null;
+ return '<section class="action-strip" aria-label="O que precisa de atenção">'+
+ '<div class="action-core"><span class="micro-heading"><span class="flash">◆</span> PRÓXIMA AÇÃO</span><p id="next-action">'+escapeHTML(subject.nextAction||'Nenhuma intervenção registrada')+'</p></div>'+
+ '<div class="blocker"><span class="micro-heading">IMPEDIMENTOS</span><p class="'+(main?'with-blocker':'')+'">'+(main?escapeHTML(main.title):'Nenhum bloqueio registrado')+'</p></div></section>';
 }
-function render(){
- const query=new URLSearchParams(location.search),id=query.get('id');
- item=snapshot.items.find(x=>x.id===id);
- if(!item){$('#app').innerHTML='<main class="not-found"><h1>Módulo não encontrado</h1><a href="./index.html">← Voltar à Central</a></main>';return}
- const theme=validTheme(item.visual?.theme);
- const list=snapshot.items.map(x=>'<option value="'+esc(x.id)+'"'+(x.id===id?' selected':'')+'>'+esc(x.shortTitle||x.title)+'</option>').join('');
- const h='<header class="project-nav"><a class="home" href="./index.html#item-'+encodeURIComponent(item.id)+'" aria-label="Voltar ao painel geral">← <span>CENTRAL</span></a>'+
- '<span class="nav-divider"></span><span class="nav-location">'+esc(areaNames[item.area]||item.area)+'</span>'+
- '<div class="nav-actions"><select id="project-select" aria-label="Ir para outro projeto">'+list+'</select><button type="button" id="refresh" aria-label="Atualizar snapshot">↻</button></div></header>';
- const m='<main class="project-main">'+hero(item,theme)+
- '<section class="facets" aria-label="Áreas relacionadas">'+facets(item)+'</section>'+controls(item)+
- '<footer class="project-foot"><span>FONTE: SNAPSHOT VERSIONADO · '+esc(snapshot.dataset==='fictitious-public-demo'?'DEMONSTRAÇÃO FICTÍCIA':'DADOS NÃO SINCRONIZADOS EM TEMPO REAL')+'</span><a href="./index.html#item-'+encodeURIComponent(item.id)+'">VOLTAR AO PAINEL GERAL ↑</a></footer></main>';
- $('#app').innerHTML='<div class="project-root theme-'+theme+'">'+h+m+'</div>';
- const bar=$('#side-fill');if(bar)bar.style.width=(workProgress(item)||0)+'%';
- $('#project-select').addEventListener('change',e=>{location.href='./project.html?id='+encodeURIComponent(e.target.value)});
- $('#refresh').addEventListener('click',load);
- $('#task-list').addEventListener('click',e=>{const button=e.target.closest('[data-task]');if(!button)return;const panel=button.nextElementSibling;panel.hidden=!panel.hidden;button.setAttribute('aria-expanded',String(!panel.hidden))});
- $('.task-filters').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(!b)return;currentFilter=b.dataset.filter;document.querySelectorAll('.filter').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b?'true':'false')});$('#task-list').innerHTML=taskRows(item)});
- $('#copy-context').addEventListener('click',async()=>{const t=[item.title,item.nextAction,...(item.tasks||[]).map(x=>states[x.state]+': '+x.title)].join('\n');try{await navigator.clipboard.writeText(t);$('#copy-context').textContent='COPIADO ✓'}catch{$('#copy-context').textContent='CÓPIA INDISPONÍVEL'}});
- document.title=(item.shortTitle||item.title)+' · Central Pessoal';
+function taskRow(task){
+ const progress=measured(task),label=taskStates[task.state]||'PENDENTE',icon=taskIcons[task.state]||'○';
+ return '<article class="task task-'+escapeHTML(task.state)+'"><button type="button" class="task-toggle" data-task="'+escapeHTML(task.id)+'" aria-expanded="false" aria-label="Detalhes: '+escapeHTML(task.title)+'">'+
+ '<span class="task-icon" aria-hidden="true">'+icon+'</span><span class="task-copy"><span class="task-name">'+escapeHTML(task.title)+'</span><span class="task-state">'+label+'</span></span>'+
+ '<span class="task-right">'+(progress===null?'':'<span class="measured">'+progress+'%</span>')+'<span class="chevron">⌄</span></span></button>'+
+ (progress!==null?'<span class="task-bar"><i data-progress="'+progress+'"></i></span>':'')+
+ '<div class="task-expanded" hidden><p>'+escapeHTML(task.detail||'Sem detalhes adicionais')+'</p>'+
+ (itemLink(task.link)||'<span class="no-source">Sem link vinculado</span>')+
+ '</div></article>';
+}
+function taskPanel(){
+ const all=subject.tasks||[];
+ const candidates=filter==='all'?taskOrder(all):filter==='active'?taskOrder(all.filter(t=>t.state!=='done')):all.filter(t=>t.state===filter);
+ const slice=(showAll||filter!=='active')?candidates:candidates.slice(0,4);
+ const remaining=Math.max(0,candidates.length-slice.length);
+ const tabs=[['active','ATIVAS'],['all','TODAS'],['in_progress','EM CURSO'],['waiting','AGUARDANDO'],['done','CONCLUÍDAS']];
+ return '<section class="tasks-section" id="tasks"><div class="section-head"><h2>TAREFAS</h2><span>'+all.filter(t=>t.state!=='done').length+' EM ABERTO</span></div>'+
+ '<nav class="filters" aria-label="Filtrar tarefas">'+tabs.map(([key,value])=>'<button class="filter '+(filter===key?'selected':'')+'" data-filter="'+key+'" type="button" aria-pressed="'+String(filter===key)+'">'+value+'</button>').join('')+'</nav>'+
+ '<div class="task-list" id="task-list">'+(slice.length?slice.map(taskRow).join(''):'<p class="empty">Nenhuma tarefa neste filtro.</p>')+'</div>'+
+ (remaining?'<button class="more" id="show-all" type="button">MOSTRAR MAIS '+remaining+' TAREFA(S) ↓</button>':'')+'</section>';
+}
+function wapsContext(){
+ if(snapshot.dataset==='fictitious-public-demo')return '';
+ const entry=wapsRegistry?.items?.find(x=>x.id===subject.id);
+ if(!entry)return '<div class="context-pair"><b>WAPS / FONTE</b><span>Registro não disponível</span></div>';
+ const source=entry.sourceStatus==='verified'?'Fonte identificada':'Fonte a confirmar';
+ const coverage=entry.documentationStatus==='complete'?'Estrutura identificada':entry.documentationStatus==='partial'?'Cobertura parcial':entry.documentationStatus==='missing'?'Arquivos não encontrados':'Não verificada';
+ const url=verifiedLink(entry.sourceUrl),record=verifiedLink(entry.wapsRecordUrl);
+ return '<div class="context-pair"><b>WAPS / FONTE</b><span>'+escapeHTML(source)+' · '+escapeHTML(coverage)+'</span></div>'+
+ (url?'<div class="context-links"><a class="source-action" href="'+escapeHTML(url)+'" target="_blank" rel="noopener noreferrer">Abrir fonte canônica ↗</a></div>':'')+
+ (record?'<div class="context-links"><a class="source-action" href="'+escapeHTML(record)+'" target="_blank" rel="noopener noreferrer">Auditoria WAPS ↗</a></div>':'');
+}
+function context(){
+ const links=[subject.link,...(subject.tasks||[]).map(t=>t.link)].filter(Boolean);
+ const seen=new Set();
+ const resources=links.map(l=>{const u=verifiedLink(l.url);if(!u||seen.has(u))return '';seen.add(u);return itemLink(l)}).filter(Boolean).join('');
+ const current=currentTask();
+ const pct=measured(current);
+ return '<section class="context-line" aria-label="Contexto adicional"><details><summary>CONTEXTO E FONTES <span>⌄</span></summary>'+
+ '<div class="context-details"><div class="context-pair"><b>TAREFA ATUAL</b><span>'+escapeHTML(current?.title||'Nenhuma tarefa ativa')+'</span></div>'+
+ '<div class="context-pair"><b>PROGRESSO</b><span>'+((pct===null)?'Sem medição confirmada':pct+'% da tarefa')+'</span></div>'+
+ (subject.dueDate?'<div class="context-pair"><b>DATA</b>'+dueLabel()+'</div>':'')+
+ '<div class="context-pair"><b>ORIGEM</b><span>'+escapeHTML(subject.source||'Não informada')+'</span></div>'+
+ wapsContext()+
+ '<div class="context-links">'+(resources||'<span>Sem links verificados</span>')+'</div>'+
+ '<button id="copy-context" type="button" class="copy">COPIAR CONTEXTO ⧉</button></div></details></section>';
+}
+function mount(){
+ const urlId=new URLSearchParams(location.search).get('id');
+ subject=snapshot.items.find(x=>x.id===urlId);
+ if(!subject){$('#app').innerHTML='<main class="not-found"><h1>Assunto não encontrado</h1><a href="./index.html">← Voltar ao painel geral</a></main>';return}
+ const theme=types[subject.visual?.theme]?'theme-'+subject.visual.theme:'theme-agents';
+ $('#app').innerHTML='<div class="app-root '+theme+'">'+header()+'<main class="main">'+actionStrip()+taskPanel()+context()+
+ '<footer><span>SNAPSHOT · '+escapeHTML(snapshot.dataset==='fictitious-public-demo'?'DADOS FICTÍCIOS':'SEM ATUALIZAÇÃO AO VIVO')+'</span><a href="'+pathToHome()+'">← VOLTAR</a></footer></main></div>';
+ document.title=(subject.shortTitle||subject.title)+' · Central';
+ $('#switcher').addEventListener('change',e=>{location.href='./project.html?id='+encodeURIComponent(e.target.value)});
+ bindTasks();
+ const c=$('#copy-context');c?.addEventListener('click',async()=>{const value=[subject.title,subject.nextAction,...(subject.tasks||[]).map(t=>(taskStates[t.state]||t.state)+': '+t.title)].join('\n');try{await navigator.clipboard.writeText(value);c.textContent='COPIADO ✓'}catch{c.textContent='CÓPIA INDISPONÍVEL'}});
+}
+function bindTasks(){
+ $$('.filter').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;showAll=false;refreshTasks()}));
+ bindTaskRows();
+}
+function refreshTasks(){
+ const replacement=document.createElement('div');replacement.innerHTML=taskPanel();
+ $('#tasks').replaceWith(replacement.firstElementChild);
+ bindTasks();
+}
+function bindTaskRows(){
+ $$('[data-progress]').forEach(el=>{el.style.width=Math.max(0,Math.min(100,Number(el.dataset.progress)||0))+'%'});
+ $$('.task-toggle').forEach(el=>el.addEventListener('click',()=>{const panel=el.closest('.task').querySelector('.task-expanded');panel.hidden=!panel.hidden;el.setAttribute('aria-expanded',String(!panel.hidden))}));
+ $('#show-all')?.addEventListener('click',()=>{showAll=true;refreshTasks()});
 }
 async function load(){
- try{const r=await fetch('./data/dashboard.json?refresh='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('Falha na leitura do JSON');const json=await r.json();if(!Array.isArray(json.items))throw Error('Esquema inválido');snapshot=json;render()}catch(err){console.error(err);$('#app').innerHTML='<div class="not-found"><h1>Não foi possível carregar</h1><a href="./index.html">Voltar à Central</a></div>'}
+ try{const response=await fetch('./data/dashboard.json?v='+Date.now(),{cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const db=await response.json();if(!Array.isArray(db.items))throw Error('Estrutura inválida');snapshot=db;
+ wapsRegistry=null;
+ if(db.dataset!=='fictitious-public-demo'){
+  try{
+   const responseWaps=await fetch('./data/waps.json?v='+Date.now(),{cache:'no-store'});
+   if(responseWaps.ok){
+    const registry=await responseWaps.json();
+    if(Array.isArray(registry.items))wapsRegistry=registry;
+   }
+  }catch(err){console.warn('WAPS indisponível:',err)}
+ }
+ mount()}
+ catch(err){console.error(err);$('#app').innerHTML='<main class="not-found"><h1>Dados indisponíveis</h1><a href="./index.html">← Voltar à Central</a></main>'}
 }
 load();
