@@ -1,46 +1,43 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b1111">
 <meta name="robots" content="noindex,nofollow,noarchive">
-<meta name="description" content="Central Pessoal — painel visual de assuntos e intervenções.">
+<meta name="description" content="Central Pessoal — módulos visuais com progresso e estado de inferência.">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="stylesheet" href="./game.css">
+<link rel="stylesheet" href="./horizontal.css">
 <script defer src="./game.js"></script>
-<title>Central · Demo fictícia</title>
+<title>Central · Comando</title>
 </head>
 <body>
 <div class="screen">
 <header class="masthead">
- <div class="brand"><span class="brand-mark">C<span>.</span></span><span class="brand-name">CENTRAL <small>/ BASE DE OPERAÇÕES</small></span></div>
- <div class="mast-actions"><span class="connection"><i></i> SNAPSHOT ESTÁTICO</span><button class="round" id="reload" aria-label="Atualizar dados" title="Recarregar JSON">↻</button></div>
+ <div class="brand"><span class="brand-mark">C<span>.</span></span><span class="brand-name">CENTRAL <small>/ DEMONSTRAÇÃO</small></span></div>
+ <div class="mast-actions"><span class="connection"><i></i> DEMO · FICTÍCIO</span><button class="round" id="reload" aria-label="Atualizar dados" title="Recarregar JSON">↻</button></div>
 </header>
 <main class="main">
- <div class="headline">
-   <div><span class="eyebrow">DEMONSTRAÇÃO PÚBLICA <span class="divider-dot">◆</span> VISÃO DE ATENÇÃO</span><h1>Escolha sua <em>próxima ação.</em></h1></div>
-   <span id="updated" class="updated">—</span>
- </div>
  <div class="toolbar">
-  <nav class="tabs" aria-label="Visualizações">
-    <button data-view="attention" class="tab selected">Minha vez <b id="need-count">—</b></button>
-    <button data-view="all" class="tab">Todos os assuntos</button>
-    <button data-view="watch" class="tab">Observando</button>
+  <nav class="tabs" aria-label="Grupos de módulos">
+   <button data-view="attention" class="tab">Sua vez <b id="need-count">—</b></button>
+   <button data-view="all" class="tab selected">Todos</button>
+   <button data-view="watch" class="tab">Em espera</button>
   </nav>
-  <label class="search"><span>⌕</span><input type="search" id="search" placeholder="Localizar..." aria-label="Localizar assunto"></label>
+  <label class="search"><span aria-hidden="true">⌕</span><input type="search" id="search" placeholder="Buscar" aria-label="Buscar módulos"></label>
  </div>
- <div class="statusline"><span id="list-label">INTERVENÇÃO NECESSÁRIA</span><span class="status-hint">TOQUE EM UM MÓDULO PARA VER AS TAREFAS</span></div>
+ <div class="statusline"><span id="list-label">TODOS OS MÓDULOS</span><span class="status-hint" id="updated">SNAPSHOT</span></div>
  <section id="tiles" class="tile-grid" aria-live="polite"></section>
- <footer class="footer"><span>◉ <span id="stamp">Snapshot versionado</span></span><span id="version">CENTRAL / V0.3</span></footer>
+ <footer class="footer"><span id="stamp">Estados de inferência exigem telemetria conectada</span><span id="version">CENTRAL / V0.4</span></footer>
 </main>
 </div>
 <div id="overlay" class="overlay" hidden>
   <div class="veil" id="veil"></div>
   <section class="detail" role="dialog" aria-modal="true" aria-labelledby="detail-title">
-    <div id="detail-root"></div>
+   <div id="detail-root"></div>
   </section>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>

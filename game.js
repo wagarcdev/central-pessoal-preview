@@ -12,26 +12,49 @@ function attention(item){const delta=calendarDays(item.dueDate);return item.stat
 function model(item){const tasks=Array.isArray(item.tasks)?item.tasks:[];return{tasks,total:tasks.length,done:tasks.filter(x=>x.state==='done').length,busy:tasks.filter(x=>x.state==='in_progress').length}}
 function photo(item){return mediaPath(item.media?.src)||'./assets/office.webp'}
 function displayTitle(item){return item.shortTitle||String(item.title||'Sem título').split(' · ')[0]}
+const categoryGlyphs={tech:'⌘',legal:'⚖',property:'⌂',business:'◈',personal:'◇'};
+const inferenceStates={
+  processing:{label:'INFERINDO',css:'processing'},
+  waiting_input:{label:'SUA VEZ',css:'waiting'},
+  completed:{label:'CONCLUÍDA',css:'completed'},
+  idle:{label:'AGUARDANDO',css:'idle'},
+  unmonitored:{label:'SEM SINAL',css:'unmonitored'}
+};
+function agentStatus(item){
+  // Never infer live telemetry from project activity or completed milestones.
+  return inferenceStates[item.inference?.state]||inferenceStates.unmonitored;
+}
+function taskProgress(item){
+  const tasks=model(item).tasks;
+  const task=tasks.find(t=>t.state==='in_progress')||tasks.find(t=>t.state==='pending')||tasks.find(t=>t.state==='waiting');
+  // Progress only comes from an explicitly measured task.progress; never from total project milestones.
+  const value=task && typeof task.progress==='number' && Number.isFinite(task.progress)?Math.max(0,Math.min(100,task.progress)):null;
+  return {task,value};
+}
 function sortList(items){return [...items].sort((a,b)=>{const r=x=>attention(x)?0:x.status==='active'?1:x.status==='watch'?2:3;return r(a)-r(b)||displayTitle(a).localeCompare(displayTitle(b),'pt-BR')})}
 function tile(item){
- const m=model(item),pct=m.total?Math.round(m.done*100/m.total):0;
- const flagged=attention(item);
- const type=flagged?'attention':item.status==='active'?'active':'watch';
- const badge=flagged?'!':item.status==='active'?'▶':'◌';
- const slogan=item.subtitle||String(item.title||'').split(' · ').slice(1).join(' · ');
- const progressCaption=m.total?m.done+'/'+m.total+' ETAPAS':'ETAPAS A DEFINIR';
- const logo=mediaPath(item.brand?.src);
- return '<article class="module'+(logo?' has-brand':'')+'"><button class="module-button" data-id="'+escapeHTML(item.id)+'" aria-label="Abrir '+escapeHTML(item.title)+'">'+
- '<img class="module-image" src="'+escapeHTML(photo(item))+'" alt="'+escapeHTML(item.media?.alt||item.title)+'" loading="lazy" decoding="async">'+
- '<span class="module-shade"></span>'+
- (logo?'<img class="module-logo" src="'+escapeHTML(logo)+'" alt="" aria-hidden="true">':'')+
- '<span class="module-top"><span class="module-area">'+escapeHTML(labels[item.area]||item.area)+'</span>'+
- '<span class="module-flag status-'+type+'" title="'+escapeHTML(statusLabels[flagged?'attention':item.status]||'Acompanhar')+'">'+badge+'</span></span>'+
- '<span class="module-text"><span class="module-title">'+escapeHTML(displayTitle(item))+'</span>'+
- '<span class="module-subtitle">'+escapeHTML(slogan||item.summary)+'</span></span>'+
- '<span class="module-footer"><span>'+escapeHTML(progressCaption)+'</span><span class="right" aria-hidden="true">⌄</span></span>'+
- '<span class="module-progress" data-progress="'+(pct===0?'zero':'measured')+'" role="progressbar" aria-label="Etapas concluídas de '+escapeHTML(displayTitle(item))+'" aria-valuenow="'+m.done+'" aria-valuemin="0" aria-valuemax="'+m.total+'"><i style="width:'+pct+'%"></i></span>'+
- '</button></article>';
+  const status=agentStatus(item),progress=taskProgress(item);
+  const label=labels[item.area]||item.area;
+  const pct=progress.value;
+  const alert=attention(item);
+  return '<article class="module"><button type="button" class="module-button" data-id="'+escapeHTML(item.id)+'" aria-label="Abrir '+escapeHTML(item.title)+'">'+
+    '<span class="module-inference status-'+status.css+'">'+
+      '<span class="cat-glyph" aria-hidden="true">'+escapeHTML(categoryGlyphs[item.area]||'◇')+'</span>'+
+      '<span class="cat-label">'+escapeHTML(label)+'</span>'+
+      '<span class="signal-state"><i aria-hidden="true"></i>'+'IA · '+escapeHTML(status.label)+'</span>'+
+    '</span>'+
+    '<span class="module-main">'+
+      '<img class="module-image" src="'+escapeHTML(photo(item))+'" alt="'+escapeHTML(item.media?.alt||item.title)+'" loading="lazy" decoding="async">'+
+      '<span class="module-shade"></span>'+
+      '<span class="module-title">'+escapeHTML(displayTitle(item))+'</span>'+
+      (alert?'<span class="attention-pip" title="Sua intervenção necessária" aria-label="Sua intervenção necessária">!</span>':'')+
+      '<span class="progress-wrap">'+
+        '<span class="progress-track'+(pct===null?' progress-unmeasured':'')+'" role="progressbar" aria-label="Progresso medido da tarefa atual em '+escapeHTML(displayTitle(item))+'"'+(pct===null?' aria-valuetext="Sem medição disponível"':' aria-valuenow="'+pct+'" aria-valuemin="0" aria-valuemax="100"')+'>'+
+          '<span class="progress-fill" style="width:'+(pct===null?0:pct)+'%"></span>'+
+        '</span>'+
+        '<span class="progress-note">'+(pct===null?'PROGRESSO NÃO MEDIDO':pct+'% DA TAREFA')+'</span>'+
+      '</span>'+
+    '</span></button></article>';
 }
 function render(){
  const list=sortList(database.items.filter(item=>(view==='all'||(view==='attention'?attention(item):item.status==='watch')) && (displayTitle(item)+' '+item.title+' '+item.summary+' '+(labels[item.area]||'')).toLocaleLowerCase('pt-BR').includes(search)));
@@ -64,9 +87,9 @@ function openModule(id){
  (logo?'<img class="detail-brand" src="'+escapeHTML(logo)+'" alt="" aria-hidden="true">':'')+
  '<div class="detail-overlay"><span class="area">'+escapeHTML(labels[item.area]||item.area).toUpperCase()+'</span>'+
  '<h2 id="detail-title">'+escapeHTML(displayTitle(item))+'</h2><p>'+escapeHTML(item.subtitle||item.summary)+'</p>'+
- '<div class="detail-progress"><i style="width:'+pct+'%"></i></div></div></section>'+
+ '<div class="detail-progress"><i style="width:'+(taskProgress(item).value??0)+'%"></i></div></div></section>'+
  '<section class="detail-content"><div class="detail-head"><span class="detail-kicker">MÓDULO / TAREFAS</span><button id="close" class="close" aria-label="Fechar painel">✕</button></div>'+
- '<div class="detail-note">'+escapeHTML(item.nextAction||item.summary)+'</div><div class="progress-caption"><span>'+m.done+' de '+m.total+' etapas registradas concluídas</span><span>'+(m.total?pct+'% das etapas':'Sem medição')+'</span></div>'+
+ '<div class="progress-caption"><span>ETAPAS CONCLUÍDAS: '+m.done+' / '+m.total+'</span><span>TAREFA ATUAL: '+(taskProgress(item).value===null?'SEM MEDIÇÃO':taskProgress(item).value+'%')+'</span></div>'+
  (m.total?['in_progress','pending','waiting','done'].map(state=>groupTasks(m.tasks,state)).join(''):'<p class="detail-note">Ainda não foram definidas etapas verificáveis para este módulo.</p>')+
  '<div class="actions">'+(mainLink?'<a class="primary" target="_blank" rel="noopener noreferrer" href="'+escapeHTML(mainLink)+'">Abrir '+escapeHTML(item.link.label||'recurso')+' ↗</a>':'')+
  '<button class="secondary" id="copy" type="button">Copiar contexto ↗</button></div>'+
