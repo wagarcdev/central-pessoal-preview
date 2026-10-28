@@ -13,8 +13,8 @@
       "status": "attention",
       "inference": {
         "state": "processing",
-        "observedAt": "2026-10-28T03:31:55.347Z",
-        "expiresAt": "2026-10-28T04:31:55.348Z",
+        "observedAt": "2026-10-27T20:06:00-03:00",
+        "expiresAt": "2026-10-27T21:06:00-03:00",
         "source": "demo-only",
         "reference": "fictitious-run-0"
       },
@@ -75,8 +75,8 @@
       "status": "attention",
       "inference": {
         "state": "waiting_input",
-        "observedAt": "2026-10-28T03:31:55.348Z",
-        "expiresAt": "2026-10-28T04:31:55.348Z",
+        "observedAt": "2026-10-27T20:06:00-03:00",
+        "expiresAt": "2026-10-27T21:06:00-03:00",
         "source": "demo-only",
         "reference": "fictitious-run-1"
       },
@@ -136,8 +136,8 @@
       "status": "watch",
       "inference": {
         "state": "completed",
-        "observedAt": "2026-10-28T03:31:55.348Z",
-        "expiresAt": "2026-10-28T04:31:55.348Z",
+        "observedAt": "2026-10-27T20:06:00-03:00",
+        "expiresAt": "2026-10-27T21:06:00-03:00",
         "source": "demo-only",
         "reference": "fictitious-run-2"
       },
@@ -191,8 +191,8 @@
       "status": "active",
       "inference": {
         "state": "idle",
-        "observedAt": "2026-10-28T03:31:55.348Z",
-        "expiresAt": "2026-10-28T04:31:55.348Z",
+        "observedAt": "2026-10-27T20:06:00-03:00",
+        "expiresAt": "2026-10-27T21:06:00-03:00",
         "source": "demo-only",
         "reference": "fictitious-run-3"
       },
@@ -253,8 +253,8 @@
       "status": "watch",
       "inference": {
         "state": "processing",
-        "observedAt": "2026-10-28T03:31:55.348Z",
-        "expiresAt": "2026-10-28T04:31:55.348Z",
+        "observedAt": "2026-10-27T20:06:00-03:00",
+        "expiresAt": "2026-10-27T21:06:00-03:00",
         "source": "demo-only",
         "reference": "fictitious-run-4"
       },
@@ -308,8 +308,8 @@
       "status": "active",
       "inference": {
         "state": "waiting_input",
-        "observedAt": "2026-10-28T03:31:55.348Z",
-        "expiresAt": "2026-10-28T04:31:55.348Z",
+        "observedAt": "2026-10-27T20:06:00-03:00",
+        "expiresAt": "2026-10-27T21:06:00-03:00",
         "source": "demo-only",
         "reference": "fictitious-run-5"
       },
@@ -363,8 +363,8 @@
       "status": "watch",
       "inference": {
         "state": "unmonitored",
-        "observedAt": "2026-10-28T03:31:55.348Z",
-        "expiresAt": "2026-10-28T04:31:55.348Z",
+        "observedAt": "2026-10-27T20:06:00-03:00",
+        "expiresAt": "2026-10-27T21:06:00-03:00",
         "source": "demo-only",
         "reference": "fictitious-run-6"
       },
@@ -418,8 +418,8 @@
       "status": "active",
       "inference": {
         "state": "processing",
-        "observedAt": "2026-10-28T03:31:55.348Z",
-        "expiresAt": "2026-10-28T04:31:55.348Z",
+        "observedAt": "2026-10-27T20:06:00-03:00",
+        "expiresAt": "2026-10-27T21:06:00-03:00",
         "source": "demo-only",
         "reference": "fictitious-run-7"
       },
@@ -479,8 +479,8 @@
       "area": "personal",
       "status": "active",
       "inference": {
-        "observedAt": "2026-10-28T03:31:55.348Z",
-        "expiresAt": "2026-10-28T04:31:55.348Z",
+        "observedAt": "2026-10-27T20:06:00-03:00",
+        "expiresAt": "2026-10-27T21:06:00-03:00",
         "source": "demo-only",
         "reference": "fictitious-run-8"
       },
@@ -539,8 +539,8 @@
       "area": "personal",
       "status": "watch",
       "inference": {
-        "observedAt": "2026-10-28T03:31:55.348Z",
-        "expiresAt": "2026-10-28T04:31:55.348Z",
+        "observedAt": "2026-10-27T20:06:00-03:00",
+        "expiresAt": "2026-10-27T21:06:00-03:00",
         "source": "demo-only",
         "reference": "fictitious-run-9"
       },
