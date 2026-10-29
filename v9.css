@@ -1,0 +1,49 @@
+
+/* CP V9 – progressively enhanced presentation, photo overlays and evidence-led areas. */
+:root{--v9-orange:#fb923c}
+.main{max-width:900px;margin:auto}
+.tile-grid{display:flex;flex-direction:column;gap:12px}
+.module{width:100%;aspect-ratio:auto;height:126px;min-height:126px;border-radius:15px}
+.module-button{display:flex;align-items:stretch}
+.module-main{position:absolute;inset:0}
+.module-image{width:100%;height:100%;object-fit:cover}
+.module-shade{background:linear-gradient(90deg,#060b12fa 0%,#070d14dd 48%,#09101b30 100%),linear-gradient(0deg,#05070b55,transparent)}
+.module-inference{position:relative;z-index:3;flex:0 0 115px;align-self:center;margin-left:14px}
+.module-title{position:absolute;left:128px;top:26px;right:35px;font-size:clamp(17px,2vw,22px)}
+.module-activity{position:absolute;left:128px;top:58px}
+.progress-wrap{position:absolute;left:128px;bottom:13px;right:20px}
+.module:focus-within{border-color:var(--v9-orange)}
+.v9-feed{border:1px solid #35404b;border-radius:14px;background:#151c26;margin:0 0 20px;padding:12px}
+.v9-feed h2{font-size:15px;margin:0 0 10px;color:#f2f5fa}
+.v9-feed-list{max-height:190px;overflow-y:auto;border:1px solid #394351;border-radius:9px;scrollbar-width:thin}
+.v9-event{border-bottom:1px solid #303a46}
+.v9-event summary{cursor:pointer;display:flex;align-items:center;gap:8px;padding:7px 9px;white-space:nowrap;height:34px;list-style:none;font-size:12px}
+.v9-event summary::-webkit-details-marker{display:none}
+.v9-event summary .v9-name{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#ffb477;font-weight:700;flex-shrink:0}
+.v9-event summary .v9-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.v9-event summary time{color:#aab4c3;font-size:10px;flex:none}
+.v9-event-body{padding:12px;background:#232d3b;font-size:12px;line-height:1.5}
+.v9-event-body a,.v9-area-detail a{display:inline-block;margin-top:7px;background:#344456;border:1px solid #596d7c;border-radius:7px;padding:7px 9px}
+.v9-empty{font-size:12px;color:#aebac6}
+.identity.v9-hero{position:relative;isolation:isolate;min-height:200px;border:1px solid #45515b;border-radius:15px;padding:17px;overflow:hidden;margin:14px 0;align-items:flex-start;flex-wrap:wrap}
+.v9-hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.identity.v9-hero:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#050a10f5,#0a0f19d0 55%,#0d11184d),linear-gradient(0deg,#070b12b8,transparent 80%)}
+.v9-hero .identity-copy h1{color:white}
+.v9-hero .v9-metrics{display:flex;gap:8px;width:100%;align-self:flex-end}
+.v9-metric{flex:1;background:#0b101bb8;border:1px solid #ffffff30;border-radius:9px;padding:10px;backdrop-filter:blur(5px);min-width:0}
+.v9-metric small{display:block;font-size:10px;color:#c1ccd5}
+.v9-metric strong{display:block;font-size:14px;color:#f7f8fa;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v9-pipeline{border:1px solid #3e4b5b;border-radius:13px;padding:14px;margin-bottom:18px;background:#151f2b}
+.v9-pipeline h2{font-size:16px;margin:0 0 7px}
+.v9-pipeline p{font-size:11px;color:#aebcc8}
+.v9-area{border:1px solid #354457;border-radius:9px;margin-top:8px;overflow:hidden}
+.v9-area summary{cursor:pointer;list-style:none;padding:12px;font-weight:700}
+.v9-area summary::-webkit-details-marker{display:none}
+.v9-area-head{display:flex;justify-content:space-between;gap:10px;font-size:12px}
+.v9-area-bar{background:#35404d;border-radius:99px;height:8px;overflow:hidden;margin-top:8px}
+.v9-area-fill{height:100%;background:#fb923c;border-radius:99px}
+.v9-area-detail{background:#202d3a;padding:12px;font-size:12px}
+.v9-area-detail ul{padding-left:18px;line-height:1.8}
+.v9-area-detail .v9-action{color:#eac69a}
+.v9-project-events{margin-bottom:16px}
+@media(max-width:610px){.module{height:112px;min-height:112px}.module-inference{flex-basis:76px;margin-left:8px;transform:scale(.7);transform-origin:left center}.module-title{left:90px;top:21px;font-size:16px}.module-activity{left:90px;top:48px}.progress-wrap{left:90px;right:12px}.v9-event summary .v9-name{max-width:77px}.v9-event summary{font-size:11px}.v9-hero .runtime{margin-left:auto}.identity.v9-hero{min-height:210px}}

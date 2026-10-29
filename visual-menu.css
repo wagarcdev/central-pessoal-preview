@@ -1,0 +1,23 @@
+/* Visual subject switcher — thumbnails reuse the dashboard's verified local media. */
+.topbar{position:relative;z-index:30;overflow:visible}
+.switcher-menu{position:relative;margin-left:auto;min-width:0;max-width:min(300px,60vw)}
+.switcher-menu>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:37px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:#202a29;color:#e8f1ed;cursor:pointer;list-style:none;font-size:12px;font-weight:700}
+.switcher-menu>summary::-webkit-details-marker{display:none}
+.switcher-menu>summary span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.switcher-caret{font-size:17px;transition:transform .15s}
+.switcher-menu[open] .switcher-caret{transform:rotate(180deg)}
+.switcher-menu[open]>summary{border-color:#79b9a2}
+.switcher-list{position:absolute;right:0;top:calc(100% + 8px);width:min(430px,calc(100vw - 24px));max-height:min(68vh,590px);overflow-y:auto;overscroll-behavior:contain;background:#141d1e;border:1px solid #415a53;border-radius:14px;padding:7px;box-shadow:0 18px 45px #000b;display:grid;gap:4px;scrollbar-width:thin}
+.switcher-item{display:grid;grid-template-columns:66px minmax(0,1fr) 15px;align-items:center;gap:12px;min-height:73px;padding:6px;border:1px solid transparent;border-radius:9px;color:#f2f5f5}
+.switcher-item:hover,.switcher-item:focus-visible{background:#233331;border-color:#486c60}
+.switcher-item.current{background:#21322c;border-color:#426b5a}
+.switcher-thumb{width:66px;height:60px;display:grid;place-items:center;overflow:hidden;border-radius:8px;background:#283b37;color:#c6ded5;font-size:22px}
+.switcher-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.switcher-copy{display:grid;gap:5px;min-width:0}.switcher-copy strong{font-size:13px;white-space:normal;line-height:1.2}.switcher-copy small{color:#a5b5b1;font-size:11px;line-height:1.25}
+.switcher-arrow{font-size:21px;color:#9aaca6}
+.module-nav{display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:thin;padding:0 0 12px;margin-bottom:4px}
+.module-nav a{flex:none;padding:9px 12px;border:1px solid #34463e;background:#17231e;border-radius:9px;font-size:11px;color:#c5d6ca;font-weight:700}
+.module-nav a:hover,.module-nav a:focus-visible{border-color:#80b9a1;background:#264135;color:#f3fff7}
+html{scroll-behavior:smooth}#overview,#als-lifecycle,#tasks,#sources{scroll-margin-top:18px}
+@media(max-width:680px){.switcher-menu{max-width:57vw}.switcher-menu>summary{min-height:34px;padding:7px 9px;font-size:11px}.switcher-list{width:min(380px,calc(100vw - 16px));right:-4px;max-height:65vh}.switcher-item{grid-template-columns:58px minmax(0,1fr) 13px;min-height:66px;gap:9px}.switcher-thumb{width:58px;height:53px}.switcher-copy strong{font-size:12px}.switcher-copy small{font-size:10px}.module-nav a{padding:8px 10px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.switcher-caret{transition:none}}

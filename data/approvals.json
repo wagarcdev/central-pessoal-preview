@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "GH-9001",
+      "projectId": "sample-1",
+      "title": "Escolher imagem ilustrativa",
+      "description": "Demonstração V10 — nenhuma decisão será enviada ao GitHub.",
+      "kind": "decision_gate",
+      "status": "pending",
+      "selectionMode": "single",
+      "revision": "demo-v10",
+      "artifacts": [
+        {
+          "id": "sample-a",
+          "type": "image",
+          "label": "Alternativa A",
+          "url": "./assets/beach.webp"
+        },
+        {
+          "id": "sample-b",
+          "type": "image",
+          "label": "Alternativa B",
+          "url": "./assets/code-screens.webp"
+        },
+        {
+          "id": "sample-c",
+          "type": "image",
+          "label": "Alternativa C",
+          "url": "./assets/office.webp"
+        }
+      ]
+    }
+  ]
+}

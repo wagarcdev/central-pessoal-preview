@@ -110,3 +110,58 @@
  .signal-state i{width:9px;height:9px}
 }
 @media(max-width:345px){.signal-state{font-size:8px}.signal-state i{width:8px;height:8px}}
+
+
+/* Operational home v0.8 — category identity and agent status are readable separately. */
+.module{height:132px;border-color:#4a5564;background:#101b24}
+.module-button{grid-template-columns:32% 68%}
+.module-inference{padding:13px 15px;gap:5px;justify-content:flex-start}
+.cat-glyph{font-size:0;line-height:0;margin:0;color:#e7f3ff;display:inline-grid;place-items:center}
+.cat-glyph svg{width:42px;height:42px;display:block;stroke-width:1.8}
+.cat-label{font-size:11px;font-weight:820;letter-spacing:.6px;margin-top:1px;color:#d7e2f0}
+.signal-state{margin-top:auto;padding-top:8px;align-items:center;gap:9px;min-width:0;white-space:normal}
+.signal-state i{width:12px;height:12px;flex:none}
+.signal-copy{display:flex;flex-direction:column;min-width:0;gap:2px;line-height:1.15}
+.signal-copy small{font-size:9px;letter-spacing:.55px;color:#bacbde;font-weight:760}
+.signal-copy strong{font-size:12px;font-weight:860;line-height:1.15;color:inherit;letter-spacing:.1px;overflow-wrap:anywhere}
+.module-title{top:46%;font-size:clamp(23px,2.8vw,32px)}
+.module-activity{position:absolute;z-index:3;left:25px;bottom:20px;max-width:85%;
+ color:#dce8fa;font-size:10px;line-height:1.25;letter-spacing:.25px;font-weight:780;
+ text-shadow:0 1px 8px #000c;background:#0a1226ad;border:1px solid #d2dcf748;border-radius:4px;padding:4px 6px}
+.module-shade{background:linear-gradient(90deg,#080e14e8,#0b122562 70%),linear-gradient(0deg,#0a101a8a,transparent 70%)}
+.module.status-waiting{border-left:3px solid #ffd399}
+.module.status-processing{border-left:3px solid #9beaff}
+.module.status-completed{border-left:3px solid #aef1c8}
+.status-unmonitored .signal-state{color:#d6e1f2}
+.status-unmonitored .signal-state i{background:#b8c9df}
+.status-processing .signal-state{color:#9beaff}
+.status-waiting .signal-state{color:#ffd399}
+.status-completed .signal-state{color:#aef1c8}
+.status-idle .signal-state{color:#bacde2}
+@media(max-width:610px){
+ .module{height:125px}
+ .module-button{grid-template-columns:36% 64%}
+ .module-inference{padding:11px 9px;gap:4px}
+ .cat-glyph svg{width:35px;height:35px}
+ .cat-label{font-size:9px;letter-spacing:.2px;margin-top:1px}
+ .signal-state{gap:6px;padding-top:6px}
+ .signal-state i{width:10px;height:10px}
+ .signal-copy small{font-size:8px;letter-spacing:.25px}
+ .signal-copy strong{font-size:10px;letter-spacing:0}
+ .module-title{left:11px;top:43%;font-size:clamp(18px,5.15vw,24px);max-width:87%}
+ .module-activity{left:11px;bottom:16px;font-size:9px;padding:3px 5px}
+ .progress-track{height:8px}
+ .attention-pip{z-index:4}
+}
+@media(max-width:370px){
+ .module-button{grid-template-columns:38% 62%}
+ .signal-copy strong{font-size:9px}
+ .cat-glyph svg{width:34px;height:34px}
+ .module-title{font-size:18px}
+}
+@media(max-width:610px){
+ .cat-label{font-size:10px}
+ .signal-copy strong{font-size:11px;line-height:1.2}
+ .signal-state i{width:11px;height:11px}
+}
+@media(max-width:370px){.signal-copy strong{font-size:10px}}

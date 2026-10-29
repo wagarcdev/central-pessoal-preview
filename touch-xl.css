@@ -1,0 +1,61 @@
+/* Touch XL: large-type, low-miss mobile interface; no behavioral changes. */
+@media(max-width:680px){
+ html{font-size:20px}
+ body{font-size:20px;line-height:1.42}
+ button,a,summary{touch-action:manipulation}
+ .main{padding-left:12px;padding-right:12px}
+ .identity-copy h1{font-size:clamp(30px,9vw,40px);line-height:1.12}
+ .identity-copy .eyebrow,.crumb,.runtime,.runtime span{font-size:16px}
+ .topbar{min-height:64px}
+ .back,.switcher-menu summary{min-height:60px;font-size:18px}
+ .switcher-item{min-height:82px;padding:15px}
+ .switcher-copy strong{font-size:20px}.switcher-copy small{font-size:16px}
+ .module-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .module-nav a{min-height:64px;padding:13px 10px;font-size:17px;display:grid;place-items:center;text-align:center}
+ .action-strip{display:grid;grid-template-columns:1fr;gap:14px}
+ .action-core,.blocker{padding:22px;border-radius:20px}
+ .micro-heading{font-size:16px}
+ #next-action,.blocker p{font-size:23px;line-height:1.35}
+ .source-action,.copy,.more{min-height:64px;display:flex;align-items:center;justify-content:center;padding:14px 16px;font-size:18px;border-radius:15px}
+ .tasks-section .section-head h2,.context-line summary{font-size:23px}
+ .section-head span,.task-state,.task-due,.task-group{font-size:16px}
+ .filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;overflow:visible}
+ .filter{min-height:60px;font-size:17px;padding:12px;min-width:0}
+ .filter-full{display:inline}.filter-short{display:none}
+ .task-list{gap:14px}
+ .task{border-radius:19px}
+ .task-toggle{min-height:90px;padding:17px 14px;gap:14px}
+ .task-icon,.task-done .task-icon,.task-waiting .task-icon{width:48px;height:48px}
+ .task-name{font-size:21px;line-height:1.3}
+ .task-labels{gap:9px}
+ .task-state,.task-due{font-size:15px;padding:5px 8px}
+ .task-group{font-size:15px}
+ .task-expanded{padding:17px;font-size:18px;line-height:1.45}
+ .task-expanded p{font-size:18px}
+ .context-line summary{min-height:70px;padding:16px}
+ .context-pair b{font-size:16px}.context-pair span{font-size:19px}
+ .als-lifecycle{padding:18px 14px;border-radius:22px}
+ .als-lifecycle h2{font-size:24px}
+ .wl-status-chip{font-size:15px;padding:8px 12px}
+ .wl-sub,.wl-legend,.wl-disclaimer{font-size:15px}
+ .wl-metric{min-height:107px;padding:13px 8px}
+ .wl-metric strong{font-size:29px}
+ .wl-metric span{font-size:14px}
+ .wl-metric small{font-size:12px}
+ .als-lifecycle h3{font-size:21px}
+ .wl-pipeline{gap:10px}
+ .wl-pipeline-row{display:grid;grid-template-columns:minmax(0,1fr) auto;min-height:82px;padding:12px 10px;gap:4px 12px;background:#202b37;border-radius:16px}
+ .wl-stage-label{display:flex;align-items:center;gap:12px;min-width:0;font-size:19px;font-weight:700;grid-column:1;grid-row:1}
+ .wl-stage-icon{display:block;flex:none;width:50px;height:50px;object-fit:contain}
+ .wl-stage-state{font-size:15px;text-align:right;grid-column:2;grid-row:1}
+ .wl-track{grid-column:1/-1;grid-row:2;height:7px}
+ .wl-notices{gap:18px}.wl-notice strong{font-size:19px}.wl-notice p{font-size:17px}
+ .wl-notice a,.wl-footer,.wl-footer a{font-size:16px}
+ .wl-footer summary{min-height:55px;display:flex;align-items:center}
+ .module-inference .signal-copy small,.module-activity,.progress-note{font-size:15px}
+ .module-button{min-height:160px}
+}
+@media(min-width:681px){
+ .wl-stage-label{display:flex;align-items:center;gap:10px}
+ .wl-stage-icon{display:block;width:38px;height:38px;object-fit:contain;flex:none}
+}

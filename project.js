@@ -21,7 +21,7 @@ const taskIcons={
  waiting:svgIcon('<circle cx="12" cy="12" r="9"/><path d="M9 8v8M15 8v8"/>'),
  done:svgIcon('<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>')
 }
-let snapshot,subject,filter='active',showAll=false,wapsRegistry=null;
+let snapshot,subject,filter='active',showAll=false,alsRegistry=null,activityRegistry=null;
 function telemetry(){
  const status=subject.inference;
  if(!status||status.state==='unmonitored')return {name:'SEM SINAL',kind:'unknown'};
@@ -62,29 +62,46 @@ function header(){
  const image=verifiedAsset(subject.brand?.src)||verifiedAsset(subject.media?.src);
  const badge=image?'<img src="'+escapeHTML(image)+'" alt="" loading="eager" decoding="async">':'<span>'+theme.symbol+'</span>';
  const t=telemetry();
- const sel=snapshot.items.map(x=>'<option value="'+escapeHTML(x.id)+'"'+(x.id===subject.id?' selected':'')+'>'+escapeHTML(x.shortTitle||x.title)+'</option>').join('');
+ const sel=snapshot.items.map(x=>{
+  const img=verifiedAsset(x.brand?.src)||verifiedAsset(x.media?.src);
+  const media=img?'<img src="'+escapeHTML(img)+'" alt="" loading="lazy" decoding="async">':'<span aria-hidden="true">◈</span>';
+  return '<a class="switcher-item'+(x.id===subject.id?' current':'')+'" href="./project.html?id='+encodeURIComponent(x.id)+'"'+(x.id===subject.id?' aria-current="page"':'')+'>'+
+   '<span class="switcher-thumb">'+media+'</span><span class="switcher-copy"><strong>'+escapeHTML(x.shortTitle||x.title)+'</strong><small>'+escapeHTML(x.subtitle||names[x.area]||'Assunto')+'</small></span><span class="switcher-arrow" aria-hidden="true">›</span></a>';
+ }).join('');
  return '<header class="topbar"><a class="back" href="'+pathToHome()+'" aria-label="Voltar à Central">← <span>CENTRAL</span></a>'+
  '<span class="crumb">'+escapeHTML(theme.label)+'</span>'+
- '<select class="switcher" id="switcher" aria-label="Trocar de assunto">'+sel+'</select></header>'+
+ '<details class="switcher-menu" id="switcher-menu"><summary aria-label="Trocar de projeto ou assunto"><span>'+escapeHTML(subject.shortTitle||subject.title)+'</span><span class="switcher-caret" aria-hidden="true">⌄</span></summary><nav class="switcher-list" aria-label="Projetos e assuntos">'+sel+'</nav></details></header>'+
  '<div class="identity"><div class="identity-image">'+badge+'</div><div class="identity-copy"><span class="eyebrow">'+escapeHTML(theme.label)+' <span>·</span> '+escapeHTML(names[subject.area]||subject.area)+'</span>'+
  '<h1>'+escapeHTML(subject.shortTitle||subject.title)+'</h1></div>'+
  '<span class="runtime '+t.kind+'"><i></i><span>IA · '+t.name+'</span></span></div>';
 }
+function moduleNavigation(){
+ const source=verifiedLink(subject.link?.url);
+ return '<nav class="module-nav" aria-label="Navegação do módulo">'+
+ '<a href="#overview">Visão geral</a><a href="#tasks">Tarefas</a><a href="#sources">Fontes</a>'+
+ (source?'<a href="'+escapeHTML(source)+'" target="_blank" rel="noopener noreferrer">Repositório / fonte ↗</a>':'')+'</nav>';
+}
 function actionStrip(){
  const blockers=Array.isArray(subject.blockers)?subject.blockers.filter(x=>typeof x==='object'&&x.title):[];
  const main=blockers.find(x=>x.state==='open')||null;
- return '<section class="action-strip" aria-label="O que precisa de atenção">'+
- '<div class="action-core"><span class="micro-heading"><span class="flash">◆</span> PRÓXIMA AÇÃO</span><p id="next-action">'+escapeHTML(subject.nextAction||'Nenhuma intervenção registrada')+'</p></div>'+
+ return '<section class="action-strip" id="overview" aria-label="O que precisa de atenção">'+
+ '<div class="action-core"><span class="micro-heading"><span class="flash">◆</span> PRÓXIMA AÇÃO</span><p id="next-action">'+escapeHTML(subject.nextAction||'Nenhuma intervenção registrada')+'</p>'+
+ ' <a class="source-action" href="#tasks">Ver tarefas e agir ↓</a>'+
+ (verifiedLink(subject.link?.url)?itemLink({url:subject.link.url,label:'Abrir fonte de trabalho'}):verifiedLink(alsRegistry?.items?.find(x=>x.id===subject.id&&x.sourceStatus==='verified')?.sourceUrl)?itemLink({url:alsRegistry.items.find(x=>x.id===subject.id).sourceUrl,label:'Abrir fonte canônica'}):'')+'</div>'+
  '<div class="blocker'+(main?' has-blocker':'')+'"><span class="micro-heading">IMPEDIMENTOS</span><p class="'+(main?'with-blocker':'')+'">'+(main?escapeHTML(main.title):'Nenhum bloqueio registrado')+'</p></div></section>';
 }
 function taskRow(task){
  const progress=measured(task),label=taskStates[task.state]||'PENDENTE',icon=taskIcons[task.state]||'○';
+ const sublabel=task.group?'<span class="task-group">'+escapeHTML(task.group)+'</span>':'';
+ const when=task.dueDate?'<span class="task-due">'+escapeHTML(task.dueDate.split('-').slice(1).reverse().join('/'))+' · '+(task.dueType==='verified_deadline'?'PRAZO DOCUMENTADO':'LEMBRETE')+'</span>':'';
+
  return '<article class="task task-'+escapeHTML(task.state)+'"><button type="button" class="task-toggle" data-task="'+escapeHTML(task.id)+'" aria-expanded="false" aria-label="Detalhes: '+escapeHTML(task.title)+'">'+
- '<span class="task-icon" aria-hidden="true">'+icon+'</span><span class="task-copy"><span class="task-name">'+escapeHTML(task.title)+'</span><span class="task-state">'+label+'</span></span>'+
+ '<span class="task-icon" aria-hidden="true">'+icon+'</span><span class="task-copy">'+sublabel+'<span class="task-name">'+escapeHTML(task.title)+'</span><span class="task-labels"><span class="task-state">'+label+'</span>'+when+'</span></span>'+
  '<span class="task-right">'+(progress===null?'':'<span class="measured">'+progress+'%</span>')+'<span class="chevron">⌄</span></span></button>'+
  (progress!==null?'<span class="task-bar"><i data-progress="'+progress+'"></i></span>':'')+
  '<div class="task-expanded" hidden><p>'+escapeHTML(task.detail||'Sem detalhes adicionais')+'</p>'+
  (itemLink(task.link)||'<span class="no-source">Sem link vinculado</span>')+
+ (verifiedLink(alsRegistry?.items?.find(x=>x.id===subject.id&&x.sourceStatus==='verified')?.sourceUrl) && /^https:\/\/github\.com\/[^/]+\/[^/]+\/?$/.test(alsRegistry.items.find(x=>x.id===subject.id).sourceUrl)?'<a class="source-action" target="_blank" rel="noopener noreferrer" href="'+escapeHTML(alsRegistry.items.find(x=>x.id===subject.id).sourceUrl.replace(/\/$/,'')+'/issues/new?title='+encodeURIComponent(task.title)+'&body='+encodeURIComponent('Tarefa de referência: '+task.id+'\nContexto: '+(task.detail||'')+'\nOrigem: Central Pessoal; revisar antes de criar.'))+'">Criar issue no projeto ↗</a>':'')+
  '</div></article>';
 }
 function taskPanel(){
@@ -98,16 +115,26 @@ function taskPanel(){
  '<div class="task-list" id="task-list">'+(slice.length?slice.map(taskRow).join(''):'<p class="empty">Nenhuma tarefa neste filtro.</p>')+'</div>'+
  (remaining?'<button class="more" id="show-all" type="button">MOSTRAR MAIS '+remaining+' TAREFA(S) ↓</button>':'')+'</section>';
 }
-function wapsContext(){
+function actualActivity(){
+ const record=activityRegistry?.items?.find(x=>x.id===subject.id && x.status==='verified');
+ if(!record||record.lastEvent?.kind!=='commit'||!record.lastEvent.at)return '';
+ const date=new Date(record.lastEvent.at);
+ if(Number.isNaN(date.getTime()))return '';
+ const formatted=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'}).format(date);
+ const reference=verifiedLink(record.lastEvent.url);
+ return '<div class="context-pair"><b>ÚLTIMA ALTERAÇÃO REGISTRADA</b><span>'+escapeHTML(formatted)+' · '+escapeHTML(record.lastEvent.sha.slice(0,8))+'</span></div>'+
+ (reference?'<div class="context-links"><a class="source-action" href="'+escapeHTML(reference)+'" target="_blank" rel="noopener noreferrer">Abrir commit verificado ↗</a></div>':'');
+}
+function alsContext(){
  if(snapshot.dataset==='fictitious-public-demo')return '';
- const entry=wapsRegistry?.items?.find(x=>x.id===subject.id);
- if(!entry)return '<div class="context-pair"><b>WAPS / FONTE</b><span>Registro não disponível</span></div>';
+ const entry=alsRegistry?.items?.find(x=>x.id===subject.id);
+ if(!entry)return '<div class="context-pair"><b>ALS / FONTE</b><span>Registro não disponível</span></div>';
  const source=entry.sourceStatus==='verified'?'Fonte identificada':'Fonte a confirmar';
  const coverage=entry.documentationStatus==='complete'?'Estrutura identificada':entry.documentationStatus==='partial'?'Cobertura parcial':entry.documentationStatus==='missing'?'Arquivos não encontrados':'Não verificada';
- const url=verifiedLink(entry.sourceUrl),record=verifiedLink(entry.wapsRecordUrl);
- return '<div class="context-pair"><b>WAPS / FONTE</b><span>'+escapeHTML(source)+' · '+escapeHTML(coverage)+'</span></div>'+
+ const url=verifiedLink(entry.sourceUrl),record=verifiedLink(entry.alsRecordUrl);
+ return '<div class="context-pair"><b>ALS / FONTE</b><span>'+escapeHTML(source)+' · '+escapeHTML(coverage)+'</span></div>'+
  (url?'<div class="context-links"><a class="source-action" href="'+escapeHTML(url)+'" target="_blank" rel="noopener noreferrer">Abrir fonte canônica ↗</a></div>':'')+
- (record?'<div class="context-links"><a class="source-action" href="'+escapeHTML(record)+'" target="_blank" rel="noopener noreferrer">Auditoria WAPS ↗</a></div>':'');
+ (record?'<div class="context-links"><a class="source-action" href="'+escapeHTML(record)+'" target="_blank" rel="noopener noreferrer">Auditoria ALS ↗</a></div>':'');
 }
 function context(){
  const links=[subject.link,...(subject.tasks||[]).map(t=>t.link)].filter(Boolean);
@@ -115,24 +142,29 @@ function context(){
  const resources=links.map(l=>{const u=verifiedLink(l.url);if(!u||seen.has(u))return '';seen.add(u);return itemLink(l)}).filter(Boolean).join('');
  const current=currentTask();
  const pct=measured(current);
- return '<section class="context-line" aria-label="Contexto adicional"><details><summary>CONTEXTO E FONTES <span>⌄</span></summary>'+
+ return '<section class="context-line" id="sources" aria-label="Contexto adicional"><details><summary>CONTEXTO E FONTES <span>⌄</span></summary>'+
  '<div class="context-details"><div class="context-pair"><b>TAREFA ATUAL</b><span>'+escapeHTML(current?.title||'Nenhuma tarefa ativa')+'</span></div>'+
  '<div class="context-pair"><b>PROGRESSO</b><span>'+((pct===null)?'Sem medição confirmada':pct+'% da tarefa')+'</span></div>'+
  (subject.dueDate?'<div class="context-pair"><b>DATA</b>'+dueLabel()+'</div>':'')+
  '<div class="context-pair"><b>ORIGEM</b><span>'+escapeHTML(subject.source||'Não informada')+'</span></div>'+
- wapsContext()+
+ alsContext()+actualActivity()+
  '<div class="context-links">'+(resources||'<span>Sem links verificados</span>')+'</div>'+
  '<button id="copy-context" type="button" class="copy">COPIAR CONTEXTO ⧉</button></div></details></section>';
 }
 function mount(){
  const urlId=new URLSearchParams(location.search).get('id');
- subject=snapshot.items.find(x=>x.id===urlId);
+ const resolvedId=urlId==='essence-contas'?'inventario':urlId;
+ if(resolvedId!==urlId)history.replaceState(null,'','./project.html?id='+encodeURIComponent(resolvedId));
+ subject=snapshot.items.find(x=>x.id===resolvedId);
  if(!subject){$('#app').innerHTML='<main class="not-found"><h1>Assunto não encontrado</h1><a href="./index.html">← Voltar ao painel geral</a></main>';return}
  const theme=types[subject.visual?.theme]?'theme-'+subject.visual.theme:'theme-agents';
- $('#app').innerHTML='<div class="app-root '+theme+'">'+header()+'<main class="main">'+actionStrip()+taskPanel()+context()+
+ $('#app').innerHTML='<div class="app-root '+theme+'">'+header()+'<main class="main">'+moduleNavigation()+actionStrip()+taskPanel()+context()+
  '<footer><span>SNAPSHOT · '+escapeHTML(snapshot.dataset==='fictitious-public-demo'?'DADOS FICTÍCIOS':'SEM ATUALIZAÇÃO AO VIVO')+'</span><a href="'+pathToHome()+'">← VOLTAR</a></footer></main></div>';
  document.title=(subject.shortTitle||subject.title)+' · Central';
- $('#switcher').addEventListener('change',e=>{location.href='./project.html?id='+encodeURIComponent(e.target.value)});
+ const menu=$('#switcher-menu');
+ document.addEventListener('pointerdown',e=>{if(menu?.open&&!menu.contains(e.target))menu.open=false});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menu?.open){menu.open=false;menu.querySelector('summary')?.focus()}});
+
  bindTasks();
  const c=$('#copy-context');c?.addEventListener('click',async()=>{const value=[subject.title,subject.nextAction,...(subject.tasks||[]).map(t=>(taskStates[t.state]||t.state)+': '+t.title)].join('\n');try{await navigator.clipboard.writeText(value);c.textContent='COPIADO ✓'}catch{c.textContent='CÓPIA INDISPONÍVEL'}});
 }
@@ -152,17 +184,22 @@ function bindTaskRows(){
 }
 async function load(){
  try{const response=await fetch('./data/dashboard.json?v='+Date.now(),{cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const db=await response.json();if(!Array.isArray(db.items))throw Error('Estrutura inválida');snapshot=db;
- wapsRegistry=null;
+ alsRegistry=null;activityRegistry=null;
  if(db.dataset!=='fictitious-public-demo'){
   try{
-   const responseWaps=await fetch('./data/waps.json?v='+Date.now(),{cache:'no-store'});
-   if(responseWaps.ok){
-    const registry=await responseWaps.json();
-    if(Array.isArray(registry.items))wapsRegistry=registry;
+   const responseAls=await fetch('./data/als.json?v='+Date.now(),{cache:'no-store'});
+   if(responseAls.ok){
+    const registry=await responseAls.json();
+    if(Array.isArray(registry.items))alsRegistry=registry;
    }
-  }catch(err){console.warn('WAPS indisponível:',err)}
+  }catch(err){console.warn('ALS indisponível:',err)}
+  try{
+   const result=await fetch('./data/activity.json?refresh='+Date.now(),{cache:'no-store'});
+   if(result.ok){const record=await result.json();if(Array.isArray(record.items))activityRegistry=record}
+  }catch(err){console.warn('Atividade de fonte indisponível:',err)}
+
  }
- mount()}
+ mount();window.dispatchEvent(new Event('als:mounted'))}
  catch(err){console.error(err);$('#app').innerHTML='<main class="not-found"><h1>Dados indisponíveis</h1><a href="./index.html">← Voltar à Central</a></main>'}
 }
 load();
